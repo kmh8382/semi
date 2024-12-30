@@ -1,7 +1,5 @@
 package com.min.semiapp.dto;
 
-import java.sql.Timestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,10 +15,10 @@ import lombok.ToString;
 @ToString
 public class BlogDto {
   private int blogId;
-  private int userId;
+  private UserDto userDto;
   private String title;
   private String contents;
   private int hit;
-  private Timestamp modifyDt;
-  private Timestamp createDt;
+  private Long modifyDtL;
+  private Long createDtL;
 }

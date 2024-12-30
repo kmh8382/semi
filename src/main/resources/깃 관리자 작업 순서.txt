@@ -1,0 +1,23 @@
+++ D: (D 드라이브)에 semiProject 폴더 생성하기
+
+$ cd semiProject
+
+$ git status
+
+$ git init
+
+$ git remote add origin https://github.com/oeoroeor123/semiProject.git
+
+++ https://www.toptal.com/developers/gitignore/ 사이트에서 windows,eclipse,java,maven 검색 후 파일 만들기
+
+$ git add .gitignore
+
+$ git commit -m 20241227
+
+$ git push origin main
+
+$ git add .
+
+$ git commit -m 기능
+
+$ git push origin main

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mybatis.mappers.blogMapper">
+
+<!--
+<resultMap type="BlogDto" id="blogMap">
+    <id column="blog_id" property="blogId"/>
+    <result column="title" property="title"/>
+    <result column="hit" property="hit"/>
+    <result column="contents" property="contents"/>
+    <result column="create_dt" property="CreateDt"/>
+    <result column="modify_dt" property="ModifyDt"/>    
+    <association javaType="UserDto" property="userDto">
+      <id column="user_id" property="userId"/>
+      <result column="user_pw" property="userPw"/>
+      <result column="user_email" property="userEmail"/>
+      <result column="user_name" property="userName"/>
+      <result column="profile_img" property="profileImg"/>
+    </association>
+  </resultMap>
+   -->
+  
+
+ <select id="selectBlogList" parameterType="Map" resultType="BlogDto">
+  SELECT 
+    blog_id, user_id, title, contents, hit, modify_dt, create_dt
+    FROM
+    tbl_blog
+  ORDER BY 
+    blog_id ${sort}
+  LIMIT
+    #{offset}, #{display}
+  </select>
+  
+ <select id="selectBlogCount" resultType="int">
+  SELECT COUNT(*)
+    FROM tbl_blog
+ </select>
+ 
+ <insert id="insertBlog" parameterType="BlogDto">
+  INSERT INTO tbl_blog
+  VALUES (null, #{userDto.userId}, #{title}, #{contents}, 0, null, NOW())
+ </insert>
+ 
+ <select id="selectBlogById" parameterType="int" resultType="BlogDto">
+  SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
+    FROM tbl_blog
+   WHERE blog_id = #{blogId}
+ </select>
+ 
+ <update id="updateBlog" parameterType="BlogDto">
+  UPDATE tbl_blog
+     <set>
+     <if test="title != ''">
+        title = #{title}
+     </if>
+     <if test="contents != ''">
+      , contents = #{contents}
+     </if>
+     <!-- title 또는 contents 둘 중 하나가 빈문자열이 아닐 경우 modify_dt 현재 일시로 수정 -->
+     <if test="title != '' or contents != ''">
+     , modify_dt = NOW()
+     </if>
+     </set>
+   WHERE blog_id = #{blogId}
+ </update>
+ 
+ <delete id="deleteBlog" parameterType="int">
+  DELETE
+    FROM tbl_blog
+   WHERE blog_id = #{blogId}
+ </delete>
+   
+  
+</mapper>
