@@ -61,8 +61,8 @@ public class BlogServiceImpl implements IBlogService {
   }
  
   @Override
-  public BlogDto getBlogById(int blog_id) {
-    return blogDao.selectBlogById(blog_id);
+  public BlogDto getBlogById(int blogId) {
+    return blogDao.selectBlogById(blogId);
   }
   
 @Override
@@ -71,8 +71,33 @@ public String modifyBlog(BlogDto blogDto) {
 }
 
 @Override
-public String removeBlog(int blog_id) {
-  return blogDao.deleteBlog(blog_id) == 1 ? "블로그 삭제 완료" : "블로그 삭제 실패";
+public String removeBlog(int blogId) {
+  return blogDao.deleteBlog(blogId) == 1 ? "블로그 삭제 완료" : "블로그 삭제 실패";
 }
 
+@Override
+public Map<String, Object> getSearchList(HttpServletRequest request) {
+  
+  // 요청 파라미터 Map 만들기
+  Map<String, Object> param = Map.of("title", request.getParameter("title"),
+                                     "userId", request.getParameter("userId"),
+                                     "contents", request.getParameter("contents"),
+                                     "beginDt", request.getParameter("beginDt"),
+                                     "endDt", request.getParameter("endDt"));
+  
+  // 검색 결과 목록 가져오기
+  List<BlogDto> searchList = blogDao.selectBlogSearchList(param);
+  
+  // 검색 결과 갯수 가져오기
+  int searchCount = blogDao.selectBlogSearchCount(param);
+  
+  // 결과 목록과 갯수 반환하기
+  return Map.of("searchList", searchList, "searchCount", searchCount);
+}
+
+
+@Override
+public int increaseBlogHit(int blogId) {
+  return blogDao.updateHit(blogId);
+}
 }

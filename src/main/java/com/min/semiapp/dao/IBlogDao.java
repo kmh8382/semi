@@ -17,16 +17,23 @@ public interface IBlogDao {
   int insertBlog(BlogDto blogDto);
   
   // 블로그 아이디 조회
-  BlogDto selectBlogById(int blog_id);
+  BlogDto selectBlogById(int blogId);
   
   // 블로그 수정
   int updateBlog(BlogDto blogDto);
   
   // 블로그 삭제
-  int deleteBlog(int blog_id);
+  int deleteBlog(int blogId);
   
   // 블로그 검색
   List<BlogDto> selectBlogSearchList(Map<String, Object> map);
   int selectBlogSearchCount(Map<String, Object> map);
+  
+  // 블로그 조회수 증가
+  int updateHit(int blogId);
+  
+  // 댓글 업데이트 및 추가
+  int updateGroupOrder(BlogDto blogDto);
+  int insertBlogReply(BlogDto blogDto);
   
 }

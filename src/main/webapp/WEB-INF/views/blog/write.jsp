@@ -34,7 +34,7 @@
    
     <span class="write_id">
       <label for="user_id">작성자 아이디</label>
-      <input type="text" name="userDto.userId" id="user_id" value="1" readonly>
+      <input type="text" name="userDto.userId" id="user_id" value="${sessionScope.loginUser.userId}" readonly>
     </span>
     
     <span class="title">

@@ -15,12 +15,17 @@ public interface IBlogService {
   String registBlog(BlogDto blogDto);
   
   // 블로그 아이디 조회
-  BlogDto getBlogById(int blog_id);
+  BlogDto getBlogById(int blogId);
   
   // 블로그 수정
   String modifyBlog(BlogDto blogDto);
   
   // 블로그 삭제
-  String removeBlog(int blog_id);
+  String removeBlog(int blogId);
   
+  // 블로그 검색
+  Map<String, Object> getSearchList(HttpServletRequest request);
+  
+  // 조회수 증가
+  int increaseBlogHit(int blogId);
 }

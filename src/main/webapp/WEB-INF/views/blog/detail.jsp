@@ -27,8 +27,9 @@
     <input type="hidden" name="blogId" value="${blog.blogId}">
     
     <div>작성자 ${blog.userDto.userId}</div>
-    <div>작성일시 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${blog.createDtL}"/></div>
-    <div>수정일시 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${blog.modifyDtL}"/></div>
+    <div>작성일시 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${blog.createDt}"/></div>
+    <div>수정일시 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${blog.modifyDt}"/></div>
+    <div>조회수 ${blog.hit}</div>
   
     <div>
       <label for="title">제목</label>
@@ -40,8 +41,8 @@
     </div>
     
     <div>
-      <button type="reset">수정초기화</button>
-      <button type="button" id="btn-modify">수정 완료</button>
+      <button type="reset" id="btn-reset">수정초기화</button>
+      <button type="button" id="btn-modify" >수정 완료</button>
       <button type="button" id="btn-remove">블로그 삭제</button>
       <button type="button" id="btn-list">블로그 리스트</button>
     </div>
@@ -81,10 +82,31 @@
         location.href= '${contextPath}/blog/list.do';
       }) 
     }
-  
+    
+    // 블로그 작성자에 따른 디테일 버튼 유무 (블로그 작성자만 수정 및 삭제 가능하도록)
+    function BlogDetail() {
+      const loggedInUserId = '${sessionScope.loginUser.userId}';
+      
+      const btnreset = document.getElementById('btn-reset');
+      const btnmodify = document.getElementById('btn-modify');
+      const btnremove = document.getElementById('btn-remove');
+        
+      if(loggedInUserId === '${blog.userDto.userId}') {
+        btnreset.style.display = 'block';
+        btnmodify.style.display = 'block';
+        btnremove.style.display = 'block';
+        
+      } else {
+        btnreset.style.display = 'none';
+        btnmodify.style.display = 'none';
+        btnremove.style.display = 'none';
+      }
+    }
+
     submitForm();
     deleteBlog();
     toBlogList();
+    BlogDetail();
     
   </script>
   

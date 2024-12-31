@@ -34,8 +34,8 @@ public class BlogDaoImpl implements IBlogDao {
   }
   
   @Override
-  public BlogDto selectBlogById(int blog_id) {
-    return template.selectOne("mybatis.mappers.blogMapper.selectBlogById", blog_id);
+  public BlogDto selectBlogById(int blogId) {
+    return template.selectOne("mybatis.mappers.blogMapper.selectBlogById", blogId);
   }
   
   @Override
@@ -44,8 +44,8 @@ public class BlogDaoImpl implements IBlogDao {
   }
   
   @Override
-  public int deleteBlog(int blog_id) {
-    return template.delete("mybatis.mappers.blogMapper.deleteBlog", blog_id);
+  public int deleteBlog(int blogId) {
+    return template.delete("mybatis.mappers.blogMapper.deleteBlog", blogId);
   }
   
   @Override
@@ -57,5 +57,20 @@ public class BlogDaoImpl implements IBlogDao {
   public int selectBlogSearchCount(Map<String, Object> map) {
     int blogCount = template.selectOne("mybatis.mappers.blogMapper.selectBlogSearchCount", map);
     return blogCount;
+  }
+  
+  @Override
+  public int updateHit(int blogId) {
+    return template.update("mybatis.mappers.blogMapper.updateHit", blogId);
+  }
+  
+  @Override
+  public int updateGroupOrder(BlogDto blogDto) {
+    return template.update("mybatis.mappers.blogMapper.updateGroupOrder", blogDto);
+  }
+  
+  @Override
+  public int insertBlogReply(BlogDto blogDto) {
+    return template.insert("mybatis.mappers.blogMapper.insertBlogReply", blogDto);
   }
 }

@@ -71,4 +71,26 @@ public class BlogController {
    return "redirect:/blog/list.do";
   }
   
+  // 블로그 검색
+  @RequestMapping(value="/blog/search.do")
+  public String search(HttpServletRequest request, Model model) {
+    
+    // 검색 서비스로부터 검색 결과 갯 수 반환
+    Map<String, Object> map = blogService.getSearchList(request);
+    
+    // 검색 결과 목록과 갯수를 jsp로 전달할 수 있도록 model에 저장
+    model.addAttribute("blogList", map.get("blogList"));
+    model.addAttribute("blogCount", map.get("blogCount"));
+    
+    return "blog/list";
+  }
+  
+  // 블로그 조회수 증가
+  @RequestMapping(value="/blog/increaseBlogHit.do")
+  public String increaseBlogHit(@RequestParam(value="blogId", required=false, defaultValue="0") int blogId) {
+    String path = blogService.increaseBlogHit(blogId) == 1 ? "/detail.do?blogId=" + blogId : "/list.do";
+    return "redirect:/blog" + path;
+  }
+  
+  
 }

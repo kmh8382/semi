@@ -3,34 +3,31 @@
 
 <mapper namespace="mybatis.mappers.blogMapper">
 
-<!--
-<resultMap type="BlogDto" id="blogMap">
+  <resultMap type="BlogDto" id="blogMap">
     <id column="blog_id" property="blogId"/>
     <result column="title" property="title"/>
-    <result column="hit" property="hit"/>
     <result column="contents" property="contents"/>
-    <result column="create_dt" property="CreateDt"/>
-    <result column="modify_dt" property="ModifyDt"/>    
+    <result column="hit" property="hit"/>
+    <result column="modify_dt" property="modifyDt"/>    
+    <result column="create_dt" property="createDt"/>
     <association javaType="UserDto" property="userDto">
       <id column="user_id" property="userId"/>
       <result column="user_pw" property="userPw"/>
       <result column="user_email" property="userEmail"/>
       <result column="user_name" property="userName"/>
       <result column="profile_img" property="profileImg"/>
+      <result column="session_id" property="sessionId"/>
+      <result column="is_admin" property="isAdmin"/>
+      <result column="change_dt" property="changeDt"/>
+      <result column="created_dt" property="createdDt"/>
     </association>
   </resultMap>
-   -->
-  
 
- <select id="selectBlogList" parameterType="Map" resultType="BlogDto">
-  SELECT 
-    blog_id, user_id, title, contents, hit, modify_dt, create_dt
-    FROM
-    tbl_blog
-  ORDER BY 
-    blog_id ${sort}
-  LIMIT
-    #{offset}, #{display}
+  <select id="selectBlogList" parameterType="Map" resultMap="blogMap">
+    SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
+      FROM tbl_blog
+     ORDER BY blog_id ${sort}
+     LIMIT #{offset}, #{display}
   </select>
   
  <select id="selectBlogCount" resultType="int">
@@ -39,11 +36,12 @@
  </select>
  
  <insert id="insertBlog" parameterType="BlogDto">
+ <!-- 파라미터가 blogDto, 파라미터 기준으로 받아오는 값 작성 -->
   INSERT INTO tbl_blog
   VALUES (null, #{userDto.userId}, #{title}, #{contents}, 0, null, NOW())
  </insert>
  
- <select id="selectBlogById" parameterType="int" resultType="BlogDto">
+ <select id="selectBlogById" parameterType="int" resultMap="blogMap">
   SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
     FROM tbl_blog
    WHERE blog_id = #{blogId}
@@ -71,6 +69,50 @@
     FROM tbl_blog
    WHERE blog_id = #{blogId}
  </delete>
-   
+ 
+ <update id="updateHit" parameterType="int">
+  UPDATE tbl_blog
+     SET hit = hit + 1
+   WHERE blog_id = #{blogId}
+ </update>
+ 
+ <select id="selectBlogSearchList" parameterType="Map" resultMap="blogMap">
+  SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
+    FROM tbl_blog
+   <where>
+   <if test="title != ''">
+      title LIKE CONCAT('%', #{query}, '%')
+   </if>
+   <if test="userId != ''">
+      AND userId LIKE CONCAT('%', #{userId}, '%') 
+   </if>
+   <if test="contents != ''">
+      AND contents LIKE CONCAT ('%', #{contents}, '%')
+   </if>
+   <if test="beginDt != '' and endDt != ''">
+      AND DATE(create_dt) BETWEEN #{beginDt} AND #{endDt}
+   </if>
+   </where>
+ </select>
+ 
+ <select id ="selectBlogSearchCount" parameterType="Map" resultType="int">
+ SELECT COUNT(*)
+   FROM tbl_blog
+    <where>
+     <if test="title != ''">
+      title LIKE CONCAT('%', #{query}, '%')
+     </if>
+     <if test="userId != ''">
+      AND userId LIKE CONCAT('%', #{userId}, '%') 
+     </if>
+     <if test="contents != ''">
+      AND contents LIKE CONCAT ('%', #{contents}, '%')
+     </if>
+     <if test="beginDt != '' and endDt != ''">
+      AND DATE(create_dt) BETWEEN #{beginDt} AND #{endDt}
+     </if>
+    </where>
+ </select>
+
   
 </mapper>
