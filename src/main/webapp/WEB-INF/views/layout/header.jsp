@@ -15,7 +15,16 @@
     const msg = '${msg}';
     if(msg !== '')
       alert(msg);
+    
+    const pw = '${pw}';
+    if(pw !== '') {
+      if(confirm(pw)) {
+        location.href = '${contextPath}/user/repw.form';
+      } 
+    }     
+    
   }
+  
   displayMsg();
 </script>
 
@@ -40,7 +49,7 @@
     <ul class="gnb">
       <li><a href="${contextPath}/blog/list.do">블로그</a></li>
       <li><a href="${contextPath}/notice/list.do">공지사항</a></li>
-      <li><a href="${contextPath}/notice/list.do">커뮤니티</a></li>
+      <li><a href="${contextPath}/bbs/list.do">커뮤니티</a></li>
     </ul>
   </nav>
   

@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.min.semiapp.dto.UserDto;
@@ -45,11 +46,13 @@ public class UserController {
   
   @RequestMapping(value="/login.do", method=RequestMethod.POST)
   public String login(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-    boolean loginSuccess = userService.login(request);
+    int loginSuccess = userService.login(request);
     String url = request.getParameter("url");
-    if(!loginSuccess) {
+    if(loginSuccess == 0) {
       redirectAttributes.addFlashAttribute("msg", "일치하는 회원 정보가 없습니다.");
       return "redirect:/user/login.form?url=" + url;
+    } else if(loginSuccess == 2) {    
+      redirectAttributes.addFlashAttribute("pw", "비밀번호를 변경한지 90일이 지났습니다. 비밀번호를 변경하시겠습니까?");
     }
     return "redirect:" + url;
   }
@@ -80,7 +83,41 @@ public class UserController {
     }
   }
   
+  @RequestMapping(value="/modifyProfile.do", method=RequestMethod.POST)
+  public String modifyProfile(@RequestParam(name="profile") MultipartFile profile  // 첨부 파일은 MultipartFile 타입으로 곧바로 받을 수 있습니다.
+                            , @RequestParam(name="userId") int userId
+                            , RedirectAttributes redirectAttributes) {
+    if(profile.isEmpty()) {  // 프로필을 첨부하지 않고 프로필 변경을 시도한 경우입니다.
+      redirectAttributes.addFlashAttribute("msg", "프로필을 선택하세요.");
+      return "redirect:/";
+    } 
+    try {
+      redirectAttributes.addFlashAttribute("msg", userService.modifyProfile(profile, userId));
+      return "redirect:/user/mypage.do?userId=" + userId;
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("msg", "프로필 변경 실패");
+      return "redirect:/";
+    }
+  }
   
+  @RequestMapping(value="/repw.form")
+  public String repwForm() {
+    return "user/repw";
+  }
+
+  @RequestMapping(value="/repw.do", method=RequestMethod.POST)
+  public String repw(UserDto userDto, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("msg", userService.modifyPw(userDto));
+    return "redirect:/user/mypage.do?userId=" + userDto.getUserId();
+  }
+  
+  @RequestMapping(value="/deleteAccount.do")
+  public String deleteAccount(HttpSession session, RedirectAttributes redirectAttributes) {
+    int userId = ((UserDto) session.getAttribute("loginUser")).getUserId();
+    session.invalidate();
+    redirectAttributes.addFlashAttribute("msg", userService.deleteAccount(userId));
+    return "redirect:/";
+  }  
   
   
 }

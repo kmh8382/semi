@@ -31,5 +31,23 @@ public class UserDaoImpl implements IUserDao {
     return template.update("mybatis.mappers.userMapper.updateUserInfo", userDto);
   }
   
+  @Override
+  public int updateUserProfile(UserDto userDto) {
+    return template.update("mybatis.mappers.userMapper.updateUserProfile", userDto);
+  }
   
+  @Override
+  public int updateUserPassword(UserDto userDto) {
+    return template.update("mybatis.mappers.userMapper.updateUserPassword", userDto);
+  }
+  
+  @Override
+  public int deleteUser(int userId) {
+    return template.delete("mybatis.mappers.userMapper.deleteUser", userId);
+  }
+  
+  @Override
+  public int insertLogin(Map<String, Object> map) {
+    return template.insert("mybatis.mappers.userMapper.insertLogin", map);
+  }
 }

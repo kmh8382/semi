@@ -9,7 +9,7 @@
   </insert>
   
   <select id="selectUserByMap" parameterType="Map" resultType="UserDto">
-    SELECT user_id, user_email, user_pw, user_name, profile_img
+    SELECT * 
       FROM tbl_user
     <where>
       <if test="userEmail != null">user_email = #{userEmail}</if>
@@ -26,6 +26,33 @@
       </set>
      WHERE user_id = #{userId}
   </update>
+  
+  <update id="updateUserProfile" parameterType="UserDto">
+    UPDATE tbl_user
+       SET profile_img = #{profileImg}
+     WHERE user_id = #{userId}
+  </update>
+  
+  <update id="updateUserPassword" parameterType="UserDto">
+    UPDATE tbl_user
+       SET user_pw = #{userPw},
+           change_dt = NOW()
+     WHERE user_id = #{userId}
+  </update>
+  
+  <delete id="deleteUser" parameterType="int">
+    DELETE
+      FROM tbl_user
+     WHERE user_id = #{userId}
+  </delete>
+  
+  <insert id="insertLogin" parameterType="Map">
+    INSERT INTO tbl_login
+    VALUES (#{UserId}, NOW(), #{ip}, #{agent})
+  </insert>
+  
+  
+  
   
   
   
