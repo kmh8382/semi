@@ -22,7 +22,7 @@ public class NoticeDaoImpl implements INoticeDao {
   
   @Override
   public List<NoticeDto> selectNoticeList(Map<String, Object> map) { //전체보기
-    return template.selectList("mybatis.mappers.noticeMapper.selectNoticeList");
+    return template.selectList("mybatis.mappers.noticeMapper.selectNoticeList", map);
   }
 
   @Override

@@ -8,7 +8,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +34,7 @@ public class NoticeController {
     model.addAttribute("noticeList", map.get("noticeList"));
     model.addAttribute("total", map.get("total"));
     model.addAttribute("paging", map.get("paging"));
-    model.addAttribute("offset", map.get("offset"));   
+    model.addAttribute("offset", map.get("offset"));
     return "notice/list";
   }
   
@@ -93,6 +92,6 @@ public class NoticeController {
     return "notice/search";
   }
   
-  
+
   
 }

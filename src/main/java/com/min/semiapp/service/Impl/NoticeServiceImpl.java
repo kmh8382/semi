@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.min.semiapp.dao.INoticeDao;
 import com.min.semiapp.dto.AttachDto;
 import com.min.semiapp.dto.NoticeDto;
+import com.min.semiapp.dto.UserDto;
 import com.min.semiapp.service.INoticeService;
 import com.min.semiapp.util.FileUtil;
 import com.min.semiapp.util.PageUtil;
@@ -73,12 +74,16 @@ public class NoticeServiceImpl implements INoticeService {
 
   @Override
   public String registNotice(MultipartHttpServletRequest mutlipartRequest) {
-    String noticeTitle = mutlipartRequest.getParameter("noticeTitle");
-    String noticeContents = mutlipartRequest.getParameter("noticeContents");
-    
+    String title = mutlipartRequest.getParameter("title");
+    String contents = mutlipartRequest.getParameter("contents");
+    int userId = Integer.parseInt(mutlipartRequest.getParameter("userId"));
+
     NoticeDto noticeDto = NoticeDto.builder()
-                              .noticeTitle(noticeTitle)
-                              .noticeContents(noticeContents)
+                              .title(title)
+                              .contents(contents)
+                              .userDto(UserDto.builder()
+                                          .userId(userId)
+                                          .build())
                               .build();
     
     int result = noticeDao.insertNotice(noticeDto);
@@ -174,22 +179,22 @@ public class NoticeServiceImpl implements INoticeService {
   @Override
   public Map<String, Object> getSearchList(HttpServletRequest request) {
     // 검색에 필요한 파라미터
-    String noticeTitle = request.getParameter("noticeTitle");
-    String noticeContents = request.getParameter("noticeContents");
+    String title = request.getParameter("title");
+    String contents = request.getParameter("contents");
     String beginDt = request.getParameter("beginDt");
     String endDt = request.getParameter("endDt");
     
     // 페이징 처리에 필요한 파라미터
     Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
     int page = Integer.parseInt(optPage.orElse("1"));
-
+    
     Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
     int display = Integer.parseInt(optDisplay.orElse("5"));
-
+    
     // 검색 키워드들을 Map으로 만듬
     Map<String, Object> map = new HashMap<String, Object>();  // Map.of()는 나중에 값을 추가할 수 없으므로 new HashMap()을 활용합니다.
-    map.put("noticeTitle", noticeTitle);
-    map.put("noticeContents", noticeContents);
+    map.put("title", title);
+    map.put("contents", contents);
     map.put("beginDt", beginDt);
     map.put("endDt", endDt);
     
@@ -208,7 +213,7 @@ public class NoticeServiceImpl implements INoticeService {
     List<NoticeDto> searchList = noticeDao.selectSearchList(map);
     
     // 페이지 이동 링크 가져오기
-    String paging = pageUtil.getSearchPaging(request.getContextPath() + "/notice/search.do", "noticeTitle=" + noticeTitle + "&noticeContents=" + noticeContents + "&beginDt=" + beginDt + "&endDt=" + endDt);
+    String paging = pageUtil.getSearchPaging(request.getContextPath() + "/notice/search.do", "title=" + title + "&contents=" + contents + "&beginDt=" + beginDt + "&endDt=" + endDt);
     
     // 결과 반환
     return Map.of("searchList", searchList
