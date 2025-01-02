@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS db_semiapp;
-CREATE DATABASE IF NOT EXISTS db_semiapp;
-USE db_semiapp;
+DROP DATABASE IF EXISTS db_semi;
+CREATE DATABASE IF NOT EXISTS db_semi;
+USE db_semi;
 
 DROP TABLE IF EXISTS tlb_attach;
 DROP TABLE IF EXISTS tbl_notice;
@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS tbl_user
 	user_name   VARCHAR(100)                 COMMENT '이름',
 	profile_img VARCHAR(100)                 COMMENT '프로필 이미지',
 	session_id	varchar(100)                 COMMENT '자동로그인 정보',
-	is_admin	BOOLEAN                      COMMENT '관리자 여부',
-    change_dt   DATETIME                     COMMENT '비밀번호 변경일시',
-    create_dt   DATETIME                     COMMENT '생성일시',
-    CONSTRAINT pk_user PRIMARY KEY (user_id)
+	is_admin	  BOOLEAN                      COMMENT '관리자 여부',
+  change_dt   DATETIME                     COMMENT '비밀번호 변경일시',
+  create_dt   DATETIME                     COMMENT '생성일시',
+  CONSTRAINT pk_user PRIMARY KEY (user_id)
 ) ENGINE='InnoDB' COMMENT '유저';
 
 CREATE TABLE IF NOT EXISTS tbl_login 
@@ -44,9 +44,9 @@ CREATE TABLE IF NOT EXISTS tbl_withdrawal
 
 CREATE TABLE tbl_notice 
 (
-	notice_id INT	       AUTO_INCREMENT COMMENT '공지사항 아이디',
-	user_id	  INT	       NOT NULL       COMMENT '유저 아이디',
-	title	  VARCHAR(100) NOT NULL       COMMENT '제목',
+	notice_id INT	         AUTO_INCREMENT COMMENT '공지사항 아이디',
+	user_id	  INT	         NOT NULL       COMMENT '유저 아이디',
+	title	    VARCHAR(100) NOT NULL       COMMENT '제목',
 	contents  TEXT	                      COMMENT '내용',
 	modify_dt DATETIME	                  COMMENT '수정일시',
 	create_dt DATETIME                    COMMENT '작성일시',
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS tbl_attach
 CREATE TABLE IF NOT EXISTS tbl_blog
 (
     blog_id   INT          AUTO_INCREMENT COMMENT '블로그 아이디',
-    user_id	  INT	       NOT NULL       COMMENT '유저 아이디',
+    user_id	  INT	         NOT NULL       COMMENT '유저 아이디',
     title     VARCHAR(100) NOT NULL       COMMENT '제목',
     contents  TEXT                        COMMENT '내용',
     hit       INT                         COMMENT '조회수',        
@@ -85,11 +85,11 @@ CREATE TABLE IF NOT EXISTS tbl_blog
 CREATE TABLE tbl_comment 
 (
 	comment_id INT	    AUTO_INCREMENT COMMENT '댓글 아이디',
-	user_id    INT		               COMMENT '유저 아이디',
+	user_id    INT		                 COMMENT '유저 아이디',
 	blog_id	   INT	    NOT NULL       COMMENT '블로그 아이디',
 	contents   TEXT	                   COMMENT '내용',	
 	modify_dt  DATETIME	               COMMENT '수정일시',
-    create_dt  DATETIME	               COMMENT '작성일시',
+  create_dt  DATETIME	               COMMENT '작성일시',
     CONSTRAINT pk_comment PRIMARY KEY (comment_id),
     CONSTRAINT fk_user_comment FOREIGN KEY (user_id)
         REFERENCES tbl_user (user_id) ON DELETE SET NULL,
@@ -100,14 +100,14 @@ CREATE TABLE tbl_comment
 CREATE TABLE IF NOT EXISTS tbl_bbs
 (
     bbs_id      INT      AUTO_INCREMENT COMMENT '게시판 아이디',
-	user_id	    INT	                    COMMENT '유저 아이디',
+	  user_id	    INT	                    COMMENT '유저 아이디',
     contents    TEXT     NOT NULL       COMMENT '내용',
     state       TINYINT                 COMMENT '삭제여부(0:정상, 1:삭제)',
     depth       TINYINT                 COMMENT '댓글깊이(0:원글, 1:댓글, 2:대댓글, ...)',
     group_id    INT                     COMMENT '그룹화(원글과 해당 원글에 달린 댓글은 같은 번호를 가짐)',
     group_order SMALLINT                COMMENT '같은 그룹 내에서 정렬하기 위한 값',    
-	modify_dt	DATETIME	            COMMENT '수정일시',
-    created_dt	DATETIME	            COMMENT '작성일시',
+	  modify_dt	  DATETIME	              COMMENT '수정일시',
+    created_dt	DATETIME	              COMMENT '작성일시',
     CONSTRAINT pk_bbs PRIMARY KEY (bbs_id),
     CONSTRAINT fk_user_bbs FOREIGN KEY (user_id)
         REFERENCES tbl_user (user_id) ON DELETE SET NULL
