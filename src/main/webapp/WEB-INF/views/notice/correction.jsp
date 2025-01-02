@@ -9,7 +9,7 @@
   <h1>Notice Correction</h1>
   
   <div>
-    <form  id="form-edit" action="${contextPath}/notice/modify.do" method="post">
+    <form  id="form-edit" action="${contextPath}/notice/modify.do" method="post" enctype="multipart/form-data">
       <input type="hidden" name="noticeId" value="${notice.noticeId}">
       <input type="text" name="title" value="${notice.title}" placeholder="제목"><br/>
       <textarea rows="5" cols="30" name="contents" placeholder="내용">${notice.contents}</textarea><br/>
