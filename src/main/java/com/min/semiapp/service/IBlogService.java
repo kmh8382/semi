@@ -28,4 +28,8 @@ public interface IBlogService {
   
   // 조회수 증가
   int increaseBlogHit(int blogId);
+  
+  // 블로그 선택 삭제
+  String removeSelectBlog(String[] blogIds);
+
 }

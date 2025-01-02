@@ -58,6 +58,14 @@
     text-align: center;
   }
   
+  .ch {
+  pointer-events: none;
+  }
+  
+  .ch input {
+  pointer-events: auto;
+  }
+  
 </style>
 
 <h1>Blog List</h1>
@@ -66,17 +74,16 @@
   <button type="button" id="btn-write">새 블로그 작성하기</button>
 </div>
 
-<div>
-  <button type="submit">블로그 삭제</button>
-  <form id="form-list" action="${contextPath}/blog/remove.do" method="post">
-  </form>
-</div>
 
 <div class="wrap">
   <div style="text-align: right; cursor: pointer;">
     <a href="${contextPath}/blog/list.do?page=1&sort=DESC">최신순</a> | 
     <a href="${contextPath}/blog/list.do?page=1&sort=ASC">과거순</a>
 </div>
+
+<div>
+  <form id="form-list" action="${contextPath}/blog/removes.do" method="post">
+  <button type="submit">블로그 삭제</button>
 
 <table>
   <caption class="number" style="text-align: right;" >총 ${total}개 블로그</caption>
@@ -95,9 +102,16 @@
    </thead>
    
    <tbody>
+
       <c:forEach items="${blogs}" var="blog" varStatus="vs">
       <tr class="blogs" data-user-id="${blog.userDto.userId}" data-blog-id="${blog.blogId}">
-        <td><input type="checkbox"></td>
+      <!-- 
+      1.checkbox 클릭 시 선택 삭제를 원하면, input 내 name(배열 이름)과
+      value(checkbox 타입은 값 입력이 아닌 단순 클릭이기 때문에 별도 지정 필요)를 지정해줘야 함
+      
+      2.선택 삭제 버튼을 품고 있는 form 태그 안에 checkbox가 들어 있어야 함
+      -->
+        <td class="ch"><input type="checkbox" name="blogIds" value="${blog.blogId}"></td>
         <td>${offset + vs.count}</td> <!-- count : index + 1 -->
         <td>${blog.userDto.userId}</td>
         <td>${blog.title}</td>
@@ -115,6 +129,8 @@
       </tr>
    </tfoot>
 </table>
+</form>
+</div>
 
 <div class="search-wrap">
   <div>
@@ -147,6 +163,14 @@
     const blogs = document.getElementsByClassName('blogs');
     for(const blog of blogs) {
       blog.addEventListener('click', (event) => {
+        
+        // type이 체크 박스인 blogs 항목은 이벤트 제외
+        if(event.target.type === 'checkbox') {
+          return;
+        }
+        
+        // 내가 쓴 블로그 클릭 시, 조회수 증가 없이 디테일 페이지로 이동 (수정, 삭제 가능한)
+        // 다른 사람이 쓴 블로그 클릭 시 , 조회수 1 증가하고 디테일 페이지로 이동 (수정 삭제 불가)
         if('${sessionScope.loginUser.userId}' === event.currentTarget.dataset.userId) {
           location.href = '${contextPath}/blog/detail.do?blogId=' + event.currentTarget.dataset.blogId;
         } else {
@@ -171,7 +195,7 @@
 
   toBlogWrite();
   toBlogDetail();
-  // toBlogDelete();
+  toBlogDelete();
   
 </script>
 

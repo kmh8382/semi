@@ -81,19 +81,19 @@
     FROM tbl_blog
    <where>
    <if test="title != ''">
-      title LIKE CONCAT('%', #{query}, '%')
-   </if>
-   <if test="userId != ''">
-      AND userId LIKE CONCAT('%', #{userId}, '%') 
-   </if>
-   <if test="contents != ''">
-      AND contents LIKE CONCAT ('%', #{contents}, '%')
-   </if>
-   <if test="beginDt != '' and endDt != ''">
-      AND DATE(create_dt) BETWEEN #{beginDt} AND #{endDt}
-   </if>
-   </where>
- </select>
+           title LIKE CONCAT('%', #{query}, '%')     
+     </if>
+     <if test="userId != ''">
+       AND usr_email LIKE CONCAT('%', #{userId}, '%')    
+     </if>
+     <if test="contents != ''">
+       AND usr_name LIKE CONCAT('%', #{contents}, '%')     
+     </if>
+     <if test="beginDt != '' and endDt != ''">
+       AND DATE(create_dt) BETWEEN #{beginDt} AND #{endDt}     
+     </if>
+     </where> 
+  </select>
  
  <select id ="selectBlogSearchCount" parameterType="Map" resultType="int">
  SELECT COUNT(*)
@@ -113,6 +113,16 @@
      </if>
     </where>
  </select>
+ 
+ <delete id="deleteSelectBlog">
+  DELETE
+    FROM tbl_blog
+   WHERE blog_id IN
+   <!--  배열에 포함된 블로그 ID들에 해당하는 블로그들을 tbl_blog 테이블에서 삭제하는 SQL 쿼리 -->
+   <foreach collection="array" item="blogIds" open="(" close=")" separator=","> <!-- open이나 close 값을 따로 지정하지 않고 위 WHERE 절에 넣어도 됨 -->
+      #{blogIds}
+    </foreach>
+ </delete>
 
   
 </mapper>

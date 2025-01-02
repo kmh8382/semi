@@ -100,4 +100,12 @@ public Map<String, Object> getSearchList(HttpServletRequest request) {
 public int increaseBlogHit(int blogId) {
   return blogDao.updateHit(blogId);
 }
+
+@Override
+public String removeSelectBlog(String[] blogIds) {
+  //  numbers 배열의 길이(삭제하려는 블로그 ID의 개수)가 같으면, 선택 삭제 성공
+  return blogDao.deleteSelectBlog(blogIds) == blogIds.length ? "선택 삭제 성공" : "선택 삭제 실패";
+}
+
+
 }

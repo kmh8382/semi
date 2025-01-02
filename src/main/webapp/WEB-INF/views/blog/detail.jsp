@@ -49,6 +49,40 @@
   </form>
   
   
+<div>
+    <c:forEach items="${commentList}" var="c" varStatus="k">
+      <div>
+        <span style="display: inline-block; width: 100px;">${offset + k.count}</span>
+        <c:if test="${c.state == 1}">
+          <span>삭제된 게시글입니다.</span>
+        </c:if>
+        <c:if test="${c.state == 0}">
+          <!-- 댓글 수준 별 들여쓰기를 공백으로 구현합니다. -->
+          <span style="display: inline-block;"><c:forEach begin="1" end="${c.depth}" step="1">&nbsp;&nbsp;</c:forEach></span>
+          <!-- 댓글이나 대댓글은 내용 앞에 [Re]를 표시합니다. -->
+          <c:if test="${c.depth > 0}">
+            <span style="display: inline-block;">[Re]</span>
+          </c:if>
+          <pre style="display: inline-block; width: 500px;">${c.contents}</pre>
+          <span style="display: inline-block;">${c.createDt}</span>
+          <span style="display: inline-block;">${c.modifyDt}</span>
+          <button type="button" class="btn-form-reply" data-index="${k.index}">댓글달기</button>
+          <button type="button" class="btn-delete" data-bbs-id="${c.commentId}">삭제</button>
+        </c:if>
+      </div>
+      <div class="form-reply hidden show${k.index}">
+        <form action="${contextPath}/blog/detail.do?blogId=" method="post">
+          <!-- 원글의 depth, group_id, group_order를 포함해야 합니다. -->
+          <input type="hidden" name="depth" value="${c.depth}">
+          <input type="hidden" name="groupId" value="${c.groupId}">
+          <input type="hidden" name="groupOrder" value="${c.groupOrder}">
+          <textarea rows="5" cols="30" name="contents" placeholder="작성하려면 로그인 해 주세요."></textarea><br/>
+          <button type="submit">작성완료</button>
+        </form>
+      </div>
+    </c:forEach>
+  </div>
+  
   <script>
       const formDetail = document.getElementById('form-detail');
     
@@ -102,12 +136,23 @@
         btnremove.style.display = 'none';
       }
     }
-
+    
+    function displayFormReply() {
+      const btnFormReply = document.getElementsByClassName('btn-form-reply');
+      for(const btn of btnFormReply) {
+        btn.addEventListener('click', (event) => {
+          hiddenAllFormReply();  // 모든 댓글 입력 폼을 숨깁니다. 
+          const target = event.currentTarget.parentElement.nextElementSibling;  // 화면에 표시할 댓글 입력 폼입니다.
+          target.classList.remove('hidden');  // 화면에 표시할 댓글 입력 폼의 class="hidden" 속성을 없앱니다.
+        })
+      }
+    }
+    
     submitForm();
     deleteBlog();
     toBlogList();
     BlogDetail();
-    
+    displayFormReply();
   </script>
   
   

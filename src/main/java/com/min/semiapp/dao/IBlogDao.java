@@ -32,8 +32,6 @@ public interface IBlogDao {
   // 블로그 조회수 증가
   int updateHit(int blogId);
   
-  // 댓글 업데이트 및 추가
-  int updateGroupOrder(BlogDto blogDto);
-  int insertBlogReply(BlogDto blogDto);
-  
+  // 블로그 선택 삭제
+  int deleteSelectBlog(String[] blogIds);
 }

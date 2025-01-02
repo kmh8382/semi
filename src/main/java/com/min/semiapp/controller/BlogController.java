@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.min.semiapp.dto.BlogDto;
+import com.min.semiapp.dto.CommentDto;
 import com.min.semiapp.service.IBlogService;
+import com.min.semiapp.service.ICommentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class BlogController {
 
   private final IBlogService blogService;
+  private final ICommentService commentService;
 
   
   // 블로그 목록 및 페이징 처리
@@ -50,12 +53,26 @@ public class BlogController {
   
   // 블로그 상세 내용 확인
   @RequestMapping(value="/blog/detail.do")
-  public String detail(@RequestParam(value="blogId") int blogId, Model model) {
+  public String detail(HttpServletRequest request, @RequestParam(value="blogId") int blogId, Model model) {
+    
     // 블로그 상세 내용 detail.jsp에 전달
     model.addAttribute("blog", blogService.getBlogById(blogId));
+    
+    // 블로그 상세에 댓글 리스트 함께 노출
+    Map<String, Object> map  = commentService.getCommentList(request);
+    model.addAttribute("offset", map.get("offset"));
+    model.addAttribute("count", map.get("count"));
+    model.addAttribute("commentList", map.get("commentList"));
+    model.addAttribute("paging", map.get("paging"));
     return "blog/detail";
   }
   
+  @RequestMapping(value="/blog/detailReply.do", method=RequestMethod.POST)
+  public String registBlogReply(CommentDto commentDto, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("msg", commentService.registBlogReply(commentDto));
+    return "redirect:/blog/detail.do";
+  }
+ 
   // 블로그 수정 성공 여부 메시지 반환
   @RequestMapping(value="/blog/modify.do", method=RequestMethod.POST)
   public String modify(BlogDto blogDto, RedirectAttributes redirectAttributes) {
@@ -91,6 +108,15 @@ public class BlogController {
     String path = blogService.increaseBlogHit(blogId) == 1 ? "/detail.do?blogId=" + blogId : "/list.do";
     return "redirect:/blog" + path;
   }
+  
+  // 블로그 선택 삭제
+  @RequestMapping(value="/blog/removes.do", method=RequestMethod.POST)
+  public String removes(String[] blogIds, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("msg", blogService.removeSelectBlog(blogIds));
+    return "redirect:/blog/list.do";
+  }
+  
+
   
   
 }

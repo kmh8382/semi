@@ -65,12 +65,10 @@ public class BlogDaoImpl implements IBlogDao {
   }
   
   @Override
-  public int updateGroupOrder(BlogDto blogDto) {
-    return template.update("mybatis.mappers.blogMapper.updateGroupOrder", blogDto);
+  public int deleteSelectBlog(String[] blogIds) {
+    int result = template.delete("mybatis.mappers.blogMapper.deleteSelectBlog", blogIds);
+    return result;
   }
   
-  @Override
-  public int insertBlogReply(BlogDto blogDto) {
-    return template.insert("mybatis.mappers.blogMapper.insertBlogReply", blogDto);
-  }
+ 
 }
