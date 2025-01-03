@@ -183,7 +183,7 @@
   }
  
   
-//블로그 선택 삭제
+  //블로그 선택 삭제
   function toBlogDelete() {
     const formList = document.getElementById('form-list');
     formList.addEventListener('submit', (event) => {

@@ -80,6 +80,7 @@
     <!-- 블로그 대댓글 달기 -->
     <c:forEach items="${commentList}" var="c" varStatus="k">
       <div>
+         
          <span style="display: inline-block; width: 100px;">${offset + k.count}</span>
         <c:if test="${b.state == 1}">
           <span>삭제된 댓글입니다.</span>
@@ -92,6 +93,8 @@
             <span style="display: inline-block;">[Re]</span>
           </c:if>
           <pre style="display: inline-block; width: 500px;">${c.contents}</pre>
+          <!-- 댓글 작성한 사람의 이메일 노출 -->
+          <span style="display: inline-block;">${c.userDto.userEmail}</span>
           <span style="display: inline-block;">${c.createDt}</span>
           <span style="display: inline-block;">${c.modifyDt}</span>
           <button type="button" class="btn-form-reply">추가</button>
