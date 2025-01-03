@@ -97,8 +97,8 @@
     <where>
       <if test="title != ''">title LIKE CONCAT('%', #{title}, '%')</if>
       <if test="contents != ''">AND contents LIKE CONCAT('%', #{contents}, '%')</if>
-      <if test="beginDt != ''">AND create_dt >= #{beginDt}</if>
-      <if test="endDt != ''">AND create_dt <![CDATA[<=]]> #{endDt}</if>
+      <if test="beginDt != '' and endDt != ''">AND DATE(create_dt) BETWEEN  #{beginDt} AND #{endDt}</if>
+ 
     </where>
     GROUP BY n.notice_id, title, contents, modify_dt, create_dt
     LIMIT #{offset}, #{display}

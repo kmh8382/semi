@@ -21,6 +21,11 @@
   <div>작성일시<fmt:formatDate value="${n.createDt}" pattern="yyyy-MM-dd a hh:mm:ss"/></div>
   <div>수정일시<fmt:formatDate value="${n.modifyDt}" pattern="yyyy-MM-dd a hh:mm:ss"/></div>
 
+  <div>
+	  <h1>제목 : ${n.title}</h1>
+	  <pre>내용 : ${n.contents}</pre>
+  </div>
+  
   <div style="background-color: beige";>
     <h4>첨부 파일</h4>
     <c:forEach items="${attachList}" var="a">
@@ -31,10 +36,6 @@
     </c:forEach>
   </div>
   
-  <div>
-	  <h1>제목 : ${n.title}</h1>
-	  <pre>내용 : ${n.contents}</pre>
-  </div>
   
   <button type="button" id="back-list" >목록</button>
   <button type="button" id="remove-detail">삭제하기</button>

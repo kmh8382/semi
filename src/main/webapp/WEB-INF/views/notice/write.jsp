@@ -10,8 +10,8 @@
   <div>
     <form  id="form-write" action="${contextPath}/notice/regist.do" method="post" enctype="multipart/form-data">
       <input type="hidden" name="userId" value="${sessionScope.loginUser.userId}">
-      <input type="text" name="title" placeholder="제목"><br/>
-      <textarea rows="5" cols="30" name="contents" placeholder="내용"></textarea><br/>
+      <input type="text" name="title" id ="title"placeholder="제목"><br/>
+      <textarea rows="5" cols="30" name="contents" id="contents" placeholder="내용"></textarea><br/>
       <input type="file" name="files" id="files" multiple><br/>
       <button type="submit">작성완료</button>
       <button type="button" id="back-write" >목록으로 돌아가기</button>
@@ -56,9 +56,28 @@
       location.href = '${contextPath}/notice/list.do';
     })
   }
-    
+    function submitForm() {
+      const formWrite = document.getElementById('form-write');
+      const title     = document.getElementById('title');
+      const contents  = document.getElementById('contents');
+      formWrite.addEventListener('submit', (event) => {
+        if(title.value === '') {
+          alert('제목은 필수입니다.');
+          title.focus();
+          event.preventDefault();
+          return;
+        }
+        if(contents.value === '') {
+          alert('내용을 작성해주시길 바랍니다.');
+          contents.focus();
+          event.preventDefault();
+          return;
+        }
+      })
+    }
     attachCheck();
     backWrite();
+    submitForm();
   </script>
 </div>
 </body>

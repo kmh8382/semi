@@ -224,11 +224,10 @@ public class NoticeServiceImpl implements INoticeService {
 
   @Override
   public String modifyNotice(NoticeDto noticeDto, MultipartHttpServletRequest mutlipartRequest) {
-   // return noticeDao.modifyNotice(noticeDto) == 1 ? "공지사항 수정 성공" : "공지사항 수정 실패";
+    // return noticeDao.modifyNotice(noticeDto) == 1 ? "공지사항 수정 성공" : "공지사항 수정 실패";
     int result = noticeDao.modifyNotice(noticeDto);
     if(result == 0)
-       return "공지사항 등록 실패";
-    // ------여기까지 왔다는건 공지사항 등록 성공했다는 의미이다.------
+       return "공지사항 수정 실패";
     
     List<MultipartFile> files = mutlipartRequest.getFiles("files");
     for(MultipartFile multipartFile : files) {
@@ -258,9 +257,8 @@ public class NoticeServiceImpl implements INoticeService {
           return "첨부 파일 등록 실패";
       }
     }
-    return "공지사항 등록 성공";    
+    return "공지사항 수정 성공";    
   }
-
 
   @Override
   public String removeAttach(String[] attachIds) {

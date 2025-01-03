@@ -11,18 +11,15 @@
   <div>
     <form  id="form-edit" action="${contextPath}/notice/modify.do" method="post" enctype="multipart/form-data">
       <input type="hidden" name="noticeId" value="${notice.noticeId}">
-      <input type="text" name="title" value="${notice.title}" placeholder="제목"><br/>
-      <textarea rows="5" cols="30" name="contents" placeholder="내용">${notice.contents}</textarea><br/>
-      <input type="file" name="files" id="files" multiple>
+      <input type="text" name="title" id="title" value="${notice.title}" placeholder="제목"><br/>
+      <textarea rows="5" cols="30" name="contents" id="contents" placeholder="내용">${notice.contents}</textarea><br/>
       <button type="reset">수정 초기화</button>
       <button type="submit" id="btn-modify">수정 완료</button>
-      <button type="button" id="btn-list">블로그 목록</button>
+      <button type="button" id="btn-list">블로그 목록</button><br/>
+      <input type="file" name="files" id="files" multiple>
     </form>
   </div>
- 
-     
-  
-  
+
   <div>
     <h3>기존 첨부파일</h3>
     <form id="form-attach" action="${contextPath}/notice/removeAttaches.do" method="post" enctype="multipart/form-data">
@@ -40,19 +37,13 @@
       </c:if>
       <c:if test="${empty attachList}">
           <p>첨부파일이 없습니다.</p>
-      </c:if>
-      
-
+      </c:if>   
     </form>
   </div>
   
-  
-  
-  
   <script>
-    function submitForm() {
+    function logForm() {
       const formEdit = document.getElementById('form-edit');
-      const title = document.getElementById('title');
       document.getElementById('btn-modify').addEventListener('click', (event) => {
         if('${sessionScope.loginUser}' === '') {
           alert('로그인이 필요합니다.');
@@ -60,22 +51,36 @@
           event.preventDefault();
           return;
         }
+      })
+    }   
+    
+    function submitForm() {
+      const formWrite = document.getElementById('form-edit');
+      const title     = document.getElementById('title');
+      const contents  = document.getElementById('contents');
+      formWrite.addEventListener('submit', (event) => {
         if(title.value === '') {
           alert('제목은 필수입니다.');
           title.focus();
+          event.preventDefault();
           return;
         }
-        formEdit.action = '${contextPath}/notice/modify.do';
-        formEdit.submit();
+        if(contents.value === '') {
+          alert('내용을 작성해주시길 바랍니다.');
+          contents.focus();
+          event.preventDefault();
+          return;
+        }
       })
     }
+    
+    
     
     function toNoticeList() {
       document.getElementById('btn-list').addEventListener('click', (event) => {
         location.href = '${contextPath}/notice/list.do';
       })
-    }
-    
+    } 
     function attachCheck() {
       const files = document.getElementById('files');
       
@@ -106,8 +111,8 @@
         }
       })
     }
-  
 
+    logForm();
     submitForm();
     toNoticeList();
     attachCheck();

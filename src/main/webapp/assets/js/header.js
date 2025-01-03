@@ -11,7 +11,7 @@
  */
 
 function getContextPath() {
-  const url = location.href;                     /* http://localhost:8080/app09/main.do */
+  const url = location.href;                     /* http://localhost:8080/semiapp/main.do */
   const host = location.host;                    /* localhost:8080 */
   const begin = url.indexOf(host) + host.length; /* 7 + 14 = 21 : ContextPath의 시작 인덱스 */
   const end = url.indexOf('/', begin + 1);       /* 27          : Mapping의 시작 인덱스 */

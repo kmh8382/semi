@@ -23,7 +23,7 @@
 </head>
 <body>
 
-  <h1 id="logo" class="logo">Naver</h1>
+   <h1 id="logo" class="logo">Naver</h1>
 
   <div class="user-info">
     <c:if test="${empty sessionScope.loginUser}">
