@@ -20,7 +20,7 @@
     margin: 30px auto;
   }
   
-  write_id, title {
+  write_email, title {
    text-align: center;
    margin: 20px;
   }
@@ -32,10 +32,11 @@
   
   <form id="form-write" action="${contextPath}/blog/regist.do" method="post">
    
-    <span class="write_id">
-      <label for="user_id">작성자 아이디</label>
-      <input type="text" name="userDto.userId" id="user_id" value="${sessionScope.loginUser.userId}" readonly>
-    </span>
+    <div class="write_email">
+      작성자 이메일 : ${sessionScope.loginUser.userEmail}
+    </div>
+    
+    <input type="hidden" name="userDto.userId" value="${sessionScope.loginUser.userId}">
     
     <span class="title">
       <label for="title">제목</label>

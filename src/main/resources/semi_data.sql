@@ -96,9 +96,9 @@ CREATE TABLE tbl_comment
 	group_order INT                    COMMENT '그룹 정렬',
 	CONSTRAINT pk_comment PRIMARY KEY (comment_id),
 	CONSTRAINT fk_user_comment FOREIGN KEY (user_id)
-			REFERENCES tbl_user (user_id) ON DELETE SET NULL,
+			REFERENCES tbl_user (user_id),
 	CONSTRAINT fk_blog_comment FOREIGN KEY (blog_id)
-			REFERENCES tbl_blog (blog_id) ON DELETE CASCADE
+			REFERENCES tbl_blog (blog_id)
 ) ENGINE=InnoDB COMMENT '블로그 댓글';
 
 CREATE TABLE IF NOT EXISTS tbl_bbs

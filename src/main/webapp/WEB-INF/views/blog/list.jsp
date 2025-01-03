@@ -113,7 +113,7 @@
       -->
         <td class="ch"><input type="checkbox" name="blogIds" value="${blog.blogId}"></td>
         <td>${offset + vs.count}</td> <!-- count : index + 1 -->
-        <td>${blog.userDto.userId}</td>
+        <td>${blog.userDto.userEmail}</td>
         <td>${blog.title}</td>
         <td>${blog.contents}</td>
         <td>${blog.hit}</td>
@@ -136,9 +136,11 @@
   <div>
     <form action="${contextPath}/blog/search.do">
       <input type="text" name="title" placeholder="제목 검색">
-      <input type="text" name="userId" placeholder="사용자 아이디 검색">
+      <input type="text" name="userEmail" placeholder="사용자 이메일 검색">
+      <input type="text" name="userName" placeholder="사용자 이름 검색">
       <input type="text" name="contents" placeholder="내용 검색"><br/>
       <input type="date" name="beginDt">-<input type="date" name="endDt">
+      
       <button type="submit">검색</button>
     </form>
   </div>
@@ -181,7 +183,7 @@
   }
  
   
-  // 블로그 선택 삭제
+//블로그 선택 삭제
   function toBlogDelete() {
     const formList = document.getElementById('form-list');
     formList.addEventListener('submit', (event) => {

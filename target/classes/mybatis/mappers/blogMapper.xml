@@ -17,15 +17,16 @@
       <result column="user_name" property="userName"/>
       <result column="profile_img" property="profileImg"/>
       <result column="session_id" property="sessionId"/>
-      <result column="is_admin" property="isAdmin"/>
+      <result column="is_admin" property="is_admin"/>
       <result column="change_dt" property="changeDt"/>
-      <result column="created_dt" property="createdDt"/>
+      <result column="create_dt" property="createDt"/>
     </association>
   </resultMap>
 
   <select id="selectBlogList" parameterType="Map" resultMap="blogMap">
-    SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
-      FROM tbl_blog
+    SELECT blog_id, u.user_email, title, contents, hit, modify_dt, b.create_dt
+      FROM tbl_blog b INNER JOIN tbl_user u
+        ON b.user_id = u.user_id
      ORDER BY blog_id ${sort}
      LIMIT #{offset}, #{display}
   </select>
@@ -42,8 +43,9 @@
  </insert>
  
  <select id="selectBlogById" parameterType="int" resultMap="blogMap">
-  SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
-    FROM tbl_blog
+  SELECT blog_id, user_email, title, contents, hit, modify_dt, b.create_dt
+    FROM tbl_blog b INNER JOIN tbl_user u
+      ON b.user_id = u.user_id
    WHERE blog_id = #{blogId}
  </select>
  
@@ -77,41 +79,49 @@
  </update>
  
  <select id="selectBlogSearchList" parameterType="Map" resultMap="blogMap">
-  SELECT blog_id, user_id, title, contents, hit, modify_dt, create_dt
-    FROM tbl_blog
+  SELECT b.blog_id, b.user_id, u.user_email, b.title, b.contents, b.hit, b.modify_dt, b.create_dt
+    FROM tbl_user u INNER JOIN tbl_blog b
+      ON u.user_id = b.user_id
    <where>
-   <if test="title != ''">
-           title LIKE CONCAT('%', #{query}, '%')     
+      <if test="title != ''">
+           b.title LIKE CONCAT('%', #{title}, '%')     
      </if>
-     <if test="userId != ''">
-       AND usr_email LIKE CONCAT('%', #{userId}, '%')    
+     <if test="userEmail != ''">
+       AND u.user_email LIKE CONCAT('%', #{userEmail}, '%')    
+     </if>
+     <if test="userName != ''">
+       AND u.user_name LIKE CONCAT('%', #{userName}, '%')     
      </if>
      <if test="contents != ''">
-       AND usr_name LIKE CONCAT('%', #{contents}, '%')     
+       AND b.contents LIKE CONCAT('%', #{contents}, '%')     
      </if>
      <if test="beginDt != '' and endDt != ''">
-       AND DATE(create_dt) BETWEEN #{beginDt} AND #{endDt}     
+       AND DATE(b.create_dt) BETWEEN #{beginDt} AND #{endDt}     
      </if>
-     </where> 
-  </select>
+ </where>
+</select>
  
  <select id ="selectBlogSearchCount" parameterType="Map" resultType="int">
- SELECT COUNT(*)
-   FROM tbl_blog
-    <where>
-     <if test="title != ''">
-      title LIKE CONCAT('%', #{query}, '%')
+  SELECT COUNT(*)
+    FROM tbl_user u INNER JOIN tbl_blog b
+      ON u.user_id = b.user_id
+   <where>
+      <if test="title != ''">
+           b.title LIKE CONCAT('%', #{title}, '%')     
      </if>
-     <if test="userId != ''">
-      AND userId LIKE CONCAT('%', #{userId}, '%') 
+     <if test="userEmail != ''">
+       AND u.user_email LIKE CONCAT('%', #{userEmail}, '%')    
+     </if>
+     <if test="userName != ''">
+       AND u.user_name LIKE CONCAT('%', #{userName}, '%')     
      </if>
      <if test="contents != ''">
-      AND contents LIKE CONCAT ('%', #{contents}, '%')
+       AND b.contents LIKE CONCAT('%', #{contents}, '%')     
      </if>
      <if test="beginDt != '' and endDt != ''">
-      AND DATE(create_dt) BETWEEN #{beginDt} AND #{endDt}
+       AND DATE(b.create_dt) BETWEEN #{beginDt} AND #{endDt}     
      </if>
-    </where>
+ </where> 
  </select>
  
  <delete id="deleteSelectBlog">

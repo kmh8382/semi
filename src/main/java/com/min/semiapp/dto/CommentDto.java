@@ -17,8 +17,8 @@ import lombok.ToString;
 @ToString
 public class CommentDto {
   private int commentId;
-  private UserDto userId;
-  private BlogDto blogId;
+  private UserDto userDto;
+  private int blogId;
   private String contents;
   private Timestamp modifyDt;
   private Timestamp createDt;

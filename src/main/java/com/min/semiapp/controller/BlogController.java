@@ -24,19 +24,6 @@ public class BlogController {
 
   private final IBlogService blogService;
   private final ICommentService commentService;
-
-  
-  // 블로그 목록 및 페이징 처리
-  @RequestMapping(value="/blog/list.do")
-  public String list(HttpServletRequest request, Model model) {
-    Map<String, Object> map = blogService.getBlogList(request);
-    model.addAttribute("blogs", map.get("blogs"));
-    model.addAttribute("total", map.get("total"));
-    model.addAttribute("paging", map.get("paging"));
-    model.addAttribute("offset", map.get("offset"));
-    
-    return "blog/list";
-  }
   
   // 블로그 작성 페이지 연결
   @RequestMapping(value="/blog/write.do")
@@ -55,24 +42,40 @@ public class BlogController {
   @RequestMapping(value="/blog/detail.do")
   public String detail(HttpServletRequest request, @RequestParam(value="blogId") int blogId, Model model) {
     
-    // 블로그 상세 내용 detail.jsp에 전달
+    // 블로그 상세 내용 detail.jsp에 전달 
     model.addAttribute("blog", blogService.getBlogById(blogId));
     
-    // 블로그 상세에 댓글 리스트 함께 노출
-    Map<String, Object> map  = commentService.getCommentList(request);
+    // 블로그 상세에 댓글 리스트 함께 노출 (블로그 아이디 별로 댓글 리스트 달라짐)
+    Map<String, Object> map  = commentService.getCommentList(request, blogId);
     model.addAttribute("offset", map.get("offset"));
     model.addAttribute("count", map.get("count"));
     model.addAttribute("commentList", map.get("commentList"));
     model.addAttribute("paging", map.get("paging"));
-    return "blog/detail";
+    
+    return "/blog/detail";
   }
   
-  @RequestMapping(value="/blog/detailReply.do", method=RequestMethod.POST)
-  public String registBlogReply(CommentDto commentDto, RedirectAttributes redirectAttributes) {
-    redirectAttributes.addFlashAttribute("msg", commentService.registBlogReply(commentDto));
-    return "redirect:/blog/detail.do";
+  // 블로그 댓글 최초 작성 (블로그 아이디 별로 댓글을 작성한다.)
+  @RequestMapping(value="/blog/registComment.do", method=RequestMethod.POST)
+  public String registComment(CommentDto commentDto, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("msg", commentService.registComment(commentDto));
+    return "redirect:/blog/detail.do?blogId=" + commentDto.getBlogId();
   }
- 
+  
+  // 블로그 대댓글 작성
+  @RequestMapping(value="/blog/registCommentReply.do", method=RequestMethod.POST)
+  public String registCommentReply(CommentDto commentDto, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("msg", commentService.registCommentReply(commentDto));
+    return "redirect:/blog/detail.do?blogId=" + commentDto.getBlogId();
+  }
+  
+  // 블로그 댓글 삭제
+  @RequestMapping(value="blog/deleteCommentReply.do")
+  public String delete(@RequestParam(value = "commentId",required = false, defaultValue = "0") int commentId, RedirectAttributes redirectAttributes) {
+    redirectAttributes.addFlashAttribute("msg", commentService.deleteCommentReply(commentId));
+    return "redirect:/blog/detail.do?commentId=" + commentId;
+  }
+  
   // 블로그 수정 성공 여부 메시지 반환
   @RequestMapping(value="/blog/modify.do", method=RequestMethod.POST)
   public String modify(BlogDto blogDto, RedirectAttributes redirectAttributes) {
@@ -88,17 +91,30 @@ public class BlogController {
    return "redirect:/blog/list.do";
   }
   
+  // 블로그 목록 및 페이징 처리
+  @RequestMapping(value="/blog/list.do")
+  public String list(HttpServletRequest request, Model model) {
+    Map<String, Object> map = blogService.getBlogList(request);
+    model.addAttribute("blogs", map.get("blogs"));
+    model.addAttribute("total", map.get("total"));
+    model.addAttribute("paging", map.get("paging"));
+    model.addAttribute("offset", map.get("offset"));
+    return "blog/list";
+  }
+  
   // 블로그 검색
   @RequestMapping(value="/blog/search.do")
   public String search(HttpServletRequest request, Model model) {
-    
-    // 검색 서비스로부터 검색 결과 갯 수 반환
+    // 검색 서비스로부터 검색 결과 반환
     Map<String, Object> map = blogService.getSearchList(request);
-    
     // 검색 결과 목록과 갯수를 jsp로 전달할 수 있도록 model에 저장
-    model.addAttribute("blogList", map.get("blogList"));
-    model.addAttribute("blogCount", map.get("blogCount"));
-    
+    model.addAttribute("blogs", map.get("searchList"));
+    model.addAttribute("total", map.get("searchCount"));
+    model.addAttribute("paging", map.get("paging"));
+    model.addAttribute("offset", map.get("offset"));
+    model.addAttribute("sort", map.get("sort"));
+    model.addAttribute("display", map.get("display"));
+    model.addAttribute("offset", map.get("offset"));
     return "blog/list";
   }
   
@@ -117,6 +133,4 @@ public class BlogController {
   }
   
 
-  
-  
 }

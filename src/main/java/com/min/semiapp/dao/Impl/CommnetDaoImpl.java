@@ -16,6 +16,11 @@ import lombok.RequiredArgsConstructor;
 public class CommnetDaoImpl implements ICommentDao {
   
   private final SqlSessionTemplate template;
+  
+  @Override
+  public int insertComment(CommentDto commentDto) {
+    return template.insert("mybatis.mappers.commentMapper.insertComment", commentDto);
+  }
 
   @Override
   public int updateGroupOrder(CommentDto commentDto) {
@@ -23,8 +28,8 @@ public class CommnetDaoImpl implements ICommentDao {
   }
 
   @Override
-  public int insertBlogReply(CommentDto commnetDto) {
-    return template.insert("mybatis.mappers.commentMapper.insertBlogReply", commnetDto);
+  public int insertCommentReply(CommentDto commentDto) {
+    return template.insert("mybatis.mappers.commentMapper.insertCommentReply", commentDto);
   }
   
   @Override
@@ -33,8 +38,13 @@ public class CommnetDaoImpl implements ICommentDao {
   }
   
   @Override
-  public int selectCommentCount() {
-    return template.selectOne("mybatis.mappers.commentMapper.selectCommentCount");
+  public int selectCommentCount(int blogId) {
+    return template.selectOne("mybatis.mappers.commentMapper.selectCommentCount", blogId);
+  }
+  
+  @Override
+  public int deleteComment(int commentId) {
+    return template.delete("mybatis.mappers.commentMapper.deleteComment", commentId);
   }
   
 

@@ -78,12 +78,20 @@ public String removeBlog(int blogId) {
 @Override
 public Map<String, Object> getSearchList(HttpServletRequest request) {
   
+  String title = request.getParameter("title");
+  String userEmail = request.getParameter("userEmail");
+  String userName = request.getParameter("userName");
+  String contents = request.getParameter("contents");
+  String beginDt = request.getParameter("beginDt");
+  String endDt = request.getParameter("endDt");
+  
   // 요청 파라미터 Map 만들기
-  Map<String, Object> param = Map.of("title", request.getParameter("title"),
-                                     "userId", request.getParameter("userId"),
-                                     "contents", request.getParameter("contents"),
-                                     "beginDt", request.getParameter("beginDt"),
-                                     "endDt", request.getParameter("endDt"));
+  Map<String, Object> param = Map.of("title", title,
+                                     "userEmail", userEmail,
+                                     "userName", userName,
+                                     "contents", contents,
+                                     "beginDt", beginDt,
+                                     "endDt", endDt);
   
   // 검색 결과 목록 가져오기
   List<BlogDto> searchList = blogDao.selectBlogSearchList(param);
@@ -91,8 +99,14 @@ public Map<String, Object> getSearchList(HttpServletRequest request) {
   // 검색 결과 갯수 가져오기
   int searchCount = blogDao.selectBlogSearchCount(param);
   
+  // 페이징 처리
+  String paging = pageUtil.getPaging(request.getContextPath() + "/blog/search.do", "&title=" + title + "&userEmail=" + userEmail + "&userName=" + userName + "&contents=" + contents + "&beginDt=" + beginDt + "&endDt=" + endDt);
+  
+  // 게시글 시작 번호
+  int offset = pageUtil.getOffset();
+  
   // 결과 목록과 갯수 반환하기
-  return Map.of("searchList", searchList, "searchCount", searchCount);
+  return Map.of("searchList", searchList, "searchCount", searchCount, "paging", paging, "offset", offset);
 }
 
 

@@ -19,6 +19,15 @@
     height: 300px;
   }
   
+  .btn-detail {
+    display: flex;
+    gap: 10px; 
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
 </style>
 
   <h1>Blog Detail</h1>
@@ -26,7 +35,7 @@
   <form id = "form-detail" method="post">
     <input type="hidden" name="blogId" value="${blog.blogId}">
     
-    <div>작성자 ${blog.userDto.userId}</div>
+    <div>작성자 ${blog.userDto.userEmail}</div>
     <div>작성일시 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${blog.createDt}"/></div>
     <div>수정일시 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${blog.modifyDt}"/></div>
     <div>조회수 ${blog.hit}</div>
@@ -40,7 +49,7 @@
       <textarea name="contents" id="contents" placeholder="내용">${blog.contents}</textarea>
     </div>
     
-    <div>
+    <div class="btn-detail">
       <button type="reset" id="btn-reset">수정초기화</button>
       <button type="button" id="btn-modify" >수정 완료</button>
       <button type="button" id="btn-remove">블로그 삭제</button>
@@ -48,13 +57,32 @@
     </div>
   </form>
   
+  <br/>
   
+  <!-- 블로그 댓글 달기 -->
+  
+    <div class="comment">
+    <h3>블로그 댓글 달기</h3>
+    <form action="${contextPath}/blog/registComment.do" method="post">
+      <input type="hidden" name="userDto.userId" value="${sessionScope.loginUser.userId}" >
+      <input type="hidden" name="blogId" value="${blog.blogId}" >
+      <textarea rows="5" cols="30" name="contents" placeholder="댓글 작성을 위해 로그인 해주세요."></textarea><br/>
+      <button type="submit">작성완료</button>
+    </form>
+    </div>
+
+  <br/>
+  <hr/>
 <div>
+
+    <h3>댓글 리스트</h3>
+  
+    <!-- 블로그 대댓글 달기 -->
     <c:forEach items="${commentList}" var="c" varStatus="k">
       <div>
-        <span style="display: inline-block; width: 100px;">${offset + k.count}</span>
-        <c:if test="${c.state == 1}">
-          <span>삭제된 게시글입니다.</span>
+         <span style="display: inline-block; width: 100px;">${offset + k.count}</span>
+        <c:if test="${b.state == 1}">
+          <span>삭제된 댓글입니다.</span>
         </c:if>
         <c:if test="${c.state == 0}">
           <!-- 댓글 수준 별 들여쓰기를 공백으로 구현합니다. -->
@@ -66,17 +94,19 @@
           <pre style="display: inline-block; width: 500px;">${c.contents}</pre>
           <span style="display: inline-block;">${c.createDt}</span>
           <span style="display: inline-block;">${c.modifyDt}</span>
-          <button type="button" class="btn-form-reply" data-index="${k.index}">댓글달기</button>
-          <button type="button" class="btn-delete" data-bbs-id="${c.commentId}">삭제</button>
+          <button type="button" class="btn-form-reply">추가</button>
+          <button type="button" class="btn-delete" data-comment-id="${c.commentId}">삭제</button>
         </c:if>
       </div>
-      <div class="form-reply hidden show${k.index}">
-        <form action="${contextPath}/blog/detail.do?blogId=" method="post">
+      <div class="form-reply hidden">
+        <form action="${contextPath}/blog/registCommentReply.do" method="post">
           <!-- 원글의 depth, group_id, group_order를 포함해야 합니다. -->
           <input type="hidden" name="depth" value="${c.depth}">
           <input type="hidden" name="groupId" value="${c.groupId}">
           <input type="hidden" name="groupOrder" value="${c.groupOrder}">
-          <textarea rows="5" cols="30" name="contents" placeholder="작성하려면 로그인 해 주세요."></textarea><br/>
+          <input type="hidden" name="userDto.userId" value="${sessionScope.loginUser.userId}" >
+          <input type="hidden" name="blogId" value="${blog.blogId}" >
+          <textarea rows="5" cols="30" name="contents" placeholder="대댓글 내용을 작성해주세요."></textarea><br/>
           <button type="submit">작성완료</button>
         </form>
       </div>
@@ -103,7 +133,7 @@
     // 블로그 삭제
     function deleteBlog() {      
       document.getElementById('btn-remove').addEventListener('click', (event) => {
-        if(confirm('현재 블로그를 삭제할까요?')) {        
+        if(confirm('현재 블로그를 삭제할까요?')) {
           formDetail.action = '${contextPath}/blog/remove.do';
           formDetail.submit();
         }
@@ -119,13 +149,13 @@
     
     // 블로그 작성자에 따른 디테일 버튼 유무 (블로그 작성자만 수정 및 삭제 가능하도록)
     function BlogDetail() {
-      const loggedInUserId = '${sessionScope.loginUser.userId}';
+      const loggedInUserId = '${sessionScope.loginUser.userEmail}';
       
       const btnreset = document.getElementById('btn-reset');
       const btnmodify = document.getElementById('btn-modify');
       const btnremove = document.getElementById('btn-remove');
         
-      if(loggedInUserId === '${blog.userDto.userId}') {
+      if(loggedInUserId === '${blog.userDto.userEmail}') {
         btnreset.style.display = 'block';
         btnmodify.style.display = 'block';
         btnremove.style.display = 'block';
@@ -136,26 +166,65 @@
         btnremove.style.display = 'none';
       }
     }
+
+    // 댓글 입력창 숨기기
+    function hiddenAllFormComment() {
+      const formComment = document.getElementsByClassName('form-reply');
+      for(const form of formComment) {
+        form.classList.add('hidden');  // 모든 댓글 입력 폼에 class="hidden"을 추가합니다. 그러면 CSS에 의해서 화면에서 사라집니다.
+      }
+    }
     
-    function displayFormReply() {
-      const btnFormReply = document.getElementsByClassName('btn-form-reply');
-      for(const btn of btnFormReply) {
+    // 댓글 입력창 노출하기
+    function displayFormComment() {
+      const btnFormComment = document.getElementsByClassName('btn-form-reply');
+      for(const btn of btnFormComment) {
         btn.addEventListener('click', (event) => {
-          hiddenAllFormReply();  // 모든 댓글 입력 폼을 숨깁니다. 
+          hiddenAllFormComment();  // 모든 댓글 입력 폼을 숨깁니다. 
           const target = event.currentTarget.parentElement.nextElementSibling;  // 화면에 표시할 댓글 입력 폼입니다.
           target.classList.remove('hidden');  // 화면에 표시할 댓글 입력 폼의 class="hidden" 속성을 없앱니다.
         })
       }
     }
     
+    // 댓글 삭제
+    function deleteComment() {
+      const btnDelete = document.getElementsByClassName('btn-delete');
+      for(const btn of btnDelete) {
+        btn.addEventListener('click', (event) => {
+          if(confirm('해당 댓글을 삭제할까요?')) {
+            location.href='${contextPath}/blog/deleteCommentReply.do?commentId=' + event.currentTarget.dataset.commentId;
+          }
+        })
+      }
+    }
+    
+    // 내가 쓴 블로그에는 댓글 작성 폼 숨기기
+    function hiddenComment() {
+      const loggedInUserId = '${sessionScope.loginUser.userId}';
+      const blogUserId = '${blog.userDto.userId}';
+      
+      // 모든 댓글 입력 폼을 가져옵니다.
+      const formComments = document.getElementsByClassName('comment');
+
+      // 로그인한 사용자와 블로그 작성자가 동일하면 댓글 폼을 숨깁니다.
+      if (loggedInUserId === blogUserId) {
+        for (const form of formComments) {
+          form.style.display = 'none';  // 각 댓글 폼의 display 속성을 'none'으로 설정
+        }
+      }
+    }
+
     submitForm();
     deleteBlog();
     toBlogList();
     BlogDetail();
-    displayFormReply();
+    hiddenAllFormComment();
+    displayFormComment();
+    deleteComment();
+    hiddenComment();
+    
   </script>
-  
-  
 
 </body>
 </html>

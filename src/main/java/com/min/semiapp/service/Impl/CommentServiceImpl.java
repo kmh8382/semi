@@ -22,23 +22,30 @@ public class CommentServiceImpl implements ICommentService {
   private final ICommentDao commentDao;
   private final PageUtil pageUtil;
   
-  
+  // 댓글 작성
   @Override
-  public String registBlogReply(CommentDto commentDto) {
+  public String registComment(CommentDto commentDto) {
+    return commentDao.insertComment(commentDto) == 1? "댓글 작성 성공" : "댓글 작성 실패";
+  }
+  
+  // 대댓글 작성
+  @Override
+  public String registCommentReply(CommentDto commentDto) {
     
     // 1. 기존 댓글 group_order 업데이트
     commentDao.updateGroupOrder(commentDto);
     
     // 2. 댓글 등록
     commentDto.setDepth(commentDto.getDepth() + 1);
-    commentDto.setGroupId(commentDto.getGroupId());
+    // commentDto.setGroupId(commentDto.getGroupId());
     commentDto.setGroupOrder(commentDto.getGroupOrder() + 1);
 
-    return commentDao.insertBlogReply(commentDto) == 1 ? "댓글 작성 성공" : "댓글 작성 실패";
+    return commentDao.insertCommentReply(commentDto) == 1 ? "대댓글 작성 성공" : "대댓글 작성 실패";
   }
   
+  // 댓글 리스트 만들기
   @Override
-  public Map<String, Object> getCommentList(HttpServletRequest request) {
+  public Map<String, Object> getCommentList(HttpServletRequest request, int blogId) {
     
     // comment 리스트 만들기
     Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
@@ -47,16 +54,24 @@ public class CommentServiceImpl implements ICommentService {
     Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
     int display = Integer.parseInt(optDisplay.orElse("20"));
     
-    int count = commentDao.selectCommentCount();
+    int count = commentDao.selectCommentCount(blogId);
     
     pageUtil.setPaging(page, display, count);
     
     int offset = pageUtil.getOffset();
     
-    List<CommentDto> commentList = commentDao.selectCommentList(Map.of("offset", offset, "display", display));
+    List<CommentDto> commentList = commentDao.selectCommentList(Map.of("offset", offset, "display", display, "blogId", blogId));
     
-    String paging = pageUtil.getPaging(request.getContextPath() + "/blog/detail.do", "");
+    String paging = pageUtil.getPaging(request.getContextPath() + "/blog/detail.do", "&blogId=" + blogId);
     
     return Map.of("offset", offset, "count", count, "commentList", commentList, "paging", paging);
+    
   }
+  
+  // 댓글 삭제
+  @Override
+  public String deleteCommentReply(int commentId) {
+    return commentDao.deleteComment(commentId) == 1? "댓글 삭제 성공" : "댓글 삭제 실패";
+  }
+  
 }
