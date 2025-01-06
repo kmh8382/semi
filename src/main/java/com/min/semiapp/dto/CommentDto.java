@@ -17,9 +17,13 @@ import lombok.ToString;
 @ToString
 public class CommentDto {
   private int commentId;
-  private int userId;
+  private UserDto userDto;
   private int blogId;
   private String contents;
   private Timestamp modifyDt;
-  private Timestamp createdDt;
+  private Timestamp createDt;
+  private int state;
+  private int depth;
+  private int groupId;
+  private int groupOrder;
 }

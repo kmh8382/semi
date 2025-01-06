@@ -24,5 +24,5 @@ public class UserDto {
   private String sessionId;
   private boolean is_admin;
   private Timestamp changeDt;
-  private Timestamp createdDt;
+  private Timestamp createDt;
 }

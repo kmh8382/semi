@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS db_semiapp;
-CREATE DATABASE IF NOT EXISTS db_semiapp;
-USE db_semiapp;
+DROP DATABASE IF EXISTS db_semi;
+CREATE DATABASE IF NOT EXISTS db_semi;
+USE db_semi;
 
-DROP TABLE IF EXISTS tlb_attach;
+DROP TABLE IF EXISTS tbl_attach;
 DROP TABLE IF EXISTS tbl_notice;
 DROP TABLE IF EXISTS tbl_comment;
 DROP TABLE IF EXISTS tbl_blog;
@@ -89,12 +89,16 @@ CREATE TABLE tbl_comment
 	blog_id	   INT	    NOT NULL       COMMENT '블로그 아이디',
 	contents   TEXT	                   COMMENT '내용',	
 	modify_dt  DATETIME	               COMMENT '수정일시',
-    create_dt  DATETIME	               COMMENT '작성일시',
-    CONSTRAINT pk_comment PRIMARY KEY (comment_id),
-    CONSTRAINT fk_user_comment FOREIGN KEY (user_id)
-        REFERENCES tbl_user (user_id) ON DELETE SET NULL,
-    CONSTRAINT fk_blog_comment FOREIGN KEY (blog_id)
-        REFERENCES tbl_blog (blog_id) ON DELETE CASCADE
+	create_dt  DATETIME	               COMMENT '작성일시',
+	state    INT                       COMMENT '원글 상태',
+	depth    INT                       COMMENT '원글 depth',
+	group_id INT                       COMMENT '그룹 아이디',
+	group_order INT                    COMMENT '그룹 정렬',
+	CONSTRAINT pk_comment PRIMARY KEY (comment_id),
+	CONSTRAINT fk_user_comment FOREIGN KEY (user_id)
+			REFERENCES tbl_user (user_id),
+	CONSTRAINT fk_blog_comment FOREIGN KEY (blog_id)
+			REFERENCES tbl_blog (blog_id)
 ) ENGINE=InnoDB COMMENT '블로그 댓글';
 
 CREATE TABLE IF NOT EXISTS tbl_bbs
