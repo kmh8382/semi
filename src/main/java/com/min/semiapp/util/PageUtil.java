@@ -97,6 +97,63 @@ public class PageUtil {
   }
   
   /**
+   * 호출한 서비스로 페이지 이동 링크를 문자열 형식으로 반환하는 메소드
+   * @param requestURI  서비스가 동작하는 요청 주소
+   * @param column  정렬할 칼럼
+   * @param sort  정렬 방식 (ASC 또는 DESC)
+   * @return  문자열 형식의 페이지 이동 링크
+   */
+  public String getPaging(String requestURI, String sort, String column) {
+    
+    StringBuilder builder = new StringBuilder();
+    
+    // <style></style>
+    builder.append("<style>");
+    builder.append(".paging { display: flex; justify-content: center; width: 400px; margin: 0 auto; }");
+    builder.append(".paging button { display: block; border: none; background-color: #fff; text-align: center; width: 30px; height: 30px; line-height: 30px; cursor: pointer; }");
+    builder.append(".paging .disabled-button { color: silver; cursor: auto; }");
+    builder.append(".paging .focus-page { color: limegreen; }");
+    builder.append("</style>");
+    
+    // <div class="paging">
+    builder.append("<div class=\"paging\">");
+    
+    // 이전 블록 <
+    // 1. 링크 없음 : <button type="button" class="disabled-button">&lt;</button>
+    // 2. 링크 있음 : <button type="button" onclick="location.href='/app10/user/list.do?page=10&sort=DESC&column=title'">&lt;</button>
+    if(beginPage == 1)
+      builder.append("<button type=\"button\" class=\"disabled-button\">&lt;</button>");
+    else
+      builder.append("<button type=\"button\" onclick=\"location.href='" + requestURI + "?page=" + (beginPage - 1) + "&sort=" + sort + "&column=" + column + "'\">&lt;</button>");
+    
+    // 1  2  3  4  5  6  7  8  9  10
+    // <button type="button" onclick="location.href='/app10/user/list.do?page=1&sort=DESC&column=title'" class="focus-page">1</button>
+    // <button type="button" onclick="location.href='/app10/user/list.do?page=2&sort=DESC&column=title'">2</button>
+    // <button type="button" onclick="location.href='/app10/user/list.do?page=3&sort=DESC&column=title'">3</button>
+    for(int p = beginPage; p <= endPage; p++) {
+      if(p == page) {
+        builder.append("<button type=\"button\" onclick=\"location.href='" + requestURI + "?page=" + p + "&sort=" + sort + "&column=" + column + "'\" class=\"focus-page\">" + p + "</button>");
+      } else {
+        builder.append("<button type=\"button\" onclick=\"location.href='" + requestURI + "?page=" + p + "&sort=" + sort + "&column=" + column + "'\">" + p + "</button>");
+      }
+    }
+    
+    // 다음 블록 >
+    // 1. 링크 없음 : <button type="button" class="disabled-button">&gt;</button>
+    // 2. 링크 있음 : <button type="button" onclick="location.href='/app10/user/list.do?page=11&sort=DESC&column=title'">&gt;</button>
+    if(endPage == totalPage)
+      builder.append("<button type=\"button\" class=\"disabled-button\">&gt;</button>");
+    else
+      builder.append("<button type=\"button\" onclick=\"location.href='" + requestURI + "?page=" + (endPage + 1) + "&sort=" + sort + "&column=" + column + "'\">&gt;</button>");
+    
+    // </div>
+    builder.append("</div>");
+    
+    return builder.toString();
+    
+  }
+  
+  /**
    * 호출한 서비스로 페이지 이동 링크를 문자열 형식으로 반환하는 메소드<br>
    * 검색 화면에서 사용
    * @param requestURI  서비스가 동작하는 요청 주소

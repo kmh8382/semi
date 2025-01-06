@@ -17,9 +17,10 @@ import lombok.ToString;
 @ToString
 public class NoticeDto {
   private int noticeId;
-  private int userId;
+  private UserDto userDto;
   private String title;
   private String contents;
   private Timestamp modifyDt;
-  private Timestamp createdDt;
+  private Timestamp createDt;
+  private int attachCount;
 }

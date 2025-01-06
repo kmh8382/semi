@@ -17,10 +17,10 @@ import lombok.ToString;
 @ToString
 public class BlogDto {
   private int blogId;
-  private int userId;
   private String title;
   private String contents;
   private int hit;
   private Timestamp modifyDt;
   private Timestamp createDt;
+  private UserDto userDto;
 }

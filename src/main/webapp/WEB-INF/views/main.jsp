@@ -6,8 +6,16 @@
 <jsp:include page="./layout/header.jsp">
   <jsp:param name="title" value="Welcome"/>
 </jsp:include>
+  <style>
+    #winter {
+      height: 600px;
+      margin-left: 330px;
+      margin-top: 10px;
+    }  
+  </style>
   
   
+  <img id="winter" src = "${contextPath}/assets/images/winter1.jpg">
 
 </div>
   

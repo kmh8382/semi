@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS db_semiapp;
-CREATE DATABASE IF NOT EXISTS db_semiapp;
-USE db_semiapp;
+DROP DATABASE IF EXISTS db_semi;
+CREATE DATABASE IF NOT EXISTS db_semi;
+USE db_semi;
 
-DROP TABLE IF EXISTS tlb_attach;
+DROP TABLE IF EXISTS tbl_attach;
 DROP TABLE IF EXISTS tbl_notice;
 DROP TABLE IF EXISTS tbl_comment;
 DROP TABLE IF EXISTS tbl_blog;
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS tbl_login
 
 CREATE TABLE IF NOT EXISTS tbl_withdrawal 
 (
-	user_email VARCHAR(100)	COMMENT '유저 아이디',
-	user_name  VARCHAR(100) COMMENT '접속 일시',
-	del_dt     DATETIME     COMMENT '접속 ip'
+	user_email VARCHAR(100)	COMMENT '유저 이메일',
+	user_name  VARCHAR(100) COMMENT '유저 이름',
+	del_dt     DATETIME     COMMENT '삭제 일'
 ) ENGINE='InnoDB' COMMENT '탈퇴 유저';
 
 CREATE TABLE tbl_notice 
@@ -89,12 +89,16 @@ CREATE TABLE tbl_comment
 	blog_id	   INT	    NOT NULL       COMMENT '블로그 아이디',
 	contents   TEXT	                   COMMENT '내용',	
 	modify_dt  DATETIME	               COMMENT '수정일시',
-    create_dt  DATETIME	               COMMENT '작성일시',
-    CONSTRAINT pk_comment PRIMARY KEY (comment_id),
-    CONSTRAINT fk_user_comment FOREIGN KEY (user_id)
-        REFERENCES tbl_user (user_id) ON DELETE SET NULL,
-    CONSTRAINT fk_blog_comment FOREIGN KEY (blog_id)
-        REFERENCES tbl_blog (blog_id) ON DELETE CASCADE
+	create_dt  DATETIME	               COMMENT '작성일시',
+	state    INT                       COMMENT '원글 상태',
+	depth    INT                       COMMENT '원글 depth',
+	group_id INT                       COMMENT '그룹 아이디',
+	group_order INT                    COMMENT '그룹 정렬',
+	CONSTRAINT pk_comment PRIMARY KEY (comment_id),
+	CONSTRAINT fk_user_comment FOREIGN KEY (user_id)
+			REFERENCES tbl_user (user_id),
+	CONSTRAINT fk_blog_comment FOREIGN KEY (blog_id)
+			REFERENCES tbl_blog (blog_id)
 ) ENGINE=InnoDB COMMENT '블로그 댓글';
 
 CREATE TABLE IF NOT EXISTS tbl_bbs
@@ -110,5 +114,42 @@ CREATE TABLE IF NOT EXISTS tbl_bbs
     created_dt	DATETIME	            COMMENT '작성일시',
     CONSTRAINT pk_bbs PRIMARY KEY (bbs_id),
     CONSTRAINT fk_user_bbs FOREIGN KEY (user_id)
-        REFERENCES tbl_user (user_id) ON DELETE SET NULL
+        REFERENCES tbl_user (user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB COMMENT='계층형게시판';
+
+DELIMITER $$
+
+CREATE TRIGGER after_user_delete
+AFTER DELETE ON tbl_user
+FOR EACH ROW
+BEGIN
+    INSERT INTO tbl_withdrawal (user_name, user_email, del_dt)
+    VALUES (OLD.user_name, OLD.user_email, NOW());
+END$$
+
+DELIMITER ;
+
+
+INSERT INTO tbl_user
+VALUES (null, SHA2('admin', 256), 'admin@naver.com', '관리자', null, null, 1, now(), now());
+INSERT INTO tbl_user
+VALUES (null, SHA2('chan', 256), 'chan@naver.com', '관리자', null, null, 1, now(), now());
+INSERT INTO tbl_user
+VALUES (null, SHA2('soo', 256), 'soo@naver.com', '관리자', null, null, 1, now(), now());
+
+SELECT * FROM tbl_user;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
