@@ -51,9 +51,31 @@
     VALUES (#{UserId}, NOW(), #{ip}, #{agent})
   </insert>
   
+  <select id="selectWithdrawalList" parameterType="Map" resultType="WithdrawalDto">
+    SELECT * 
+      FROM tbl_withdrawal
+     ORDER BY del_dt DESC
+     LIMIT #{offset}, #{display}          
+  </select>  
   
-  
-  
-  
-  
+  <select id="selectWithdrawalCount" resultType="int">
+    SELECT COUNT(*)
+      FROM tbl_withdrawal
+     ORDER BY del_dt DESC
+  </select>
+    
+  <select id="selectLoginList" parameterType="Map" resultType="LoginDto">
+    SELECT l.user_id, u.user_email, u.user_name, acc_dt, acc_ip, user_agent
+      FROM tbl_login l INNER JOIN tbl_user u
+        ON l.user_id = u.user_id
+     ORDER BY acc_dt DESC
+     LIMIT #{offset}, #{display}     
+   </select>  
+
+  <select id="selectLoginCount" resultType="int">
+    SELECT COUNT(*)
+      FROM tbl_login l INNER JOIN tbl_user u
+        ON l.user_id = u.user_id
+  </select>
+        
 </mapper>

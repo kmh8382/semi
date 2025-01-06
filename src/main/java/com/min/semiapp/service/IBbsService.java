@@ -11,5 +11,6 @@ public interface IBbsService {
   Map<String, Object> getBbsList(HttpServletRequest request);
   String registBbsReply(BbsDto bbsDto);
   String deleteBbs(int bbsId);
+  Map<String, Object> getSearchList(HttpServletRequest request);
 
 }

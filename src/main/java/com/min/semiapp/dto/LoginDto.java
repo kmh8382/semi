@@ -17,6 +17,8 @@ import lombok.ToString;
 @ToString
 public class LoginDto {
   private int userId;
+  private String userEmail;
+  private String userName;  
   private Timestamp accDt;
   private String accIp;
   private String userAgent;

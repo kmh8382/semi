@@ -1,12 +1,15 @@
 package com.min.semiapp.dao.Impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.min.semiapp.dao.IUserDao;
+import com.min.semiapp.dto.LoginDto;
 import com.min.semiapp.dto.UserDto;
+import com.min.semiapp.dto.WithdrawalDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,5 +52,25 @@ public class UserDaoImpl implements IUserDao {
   @Override
   public int insertLogin(Map<String, Object> map) {
     return template.insert("mybatis.mappers.userMapper.insertLogin", map);
+  }
+  
+  @Override
+  public List<WithdrawalDto> selectWithdrawalList(Map<String, Object> map) {
+    return template.selectList("mybatis.mappers.userMapper.selectWithdrawalList", map);
+  }
+  
+  @Override
+  public int selectWithdrawalCount() {
+    return template.selectOne("mybatis.mappers.userMapper.selectWithdrawalCount");
+  }
+  
+  @Override
+  public List<LoginDto> selectLoginList(Map<String, Object> map) {
+    return template.selectList("mybatis.mappers.userMapper.selectLoginList", map);
+  }
+  
+  @Override
+  public int selectLoginCount() {
+    return template.selectOne("mybatis.mappers.userMapper.selectLoginCount");
   }
 }

@@ -1,5 +1,6 @@
 package com.min.semiapp.service.Impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class BbsServiceImpl implements IBbsService {
     int page = Integer.parseInt(optPage.orElse("1"));
 
     Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
-    int display = Integer.parseInt(optDisplay.orElse("20"));
+    int display = Integer.parseInt(optDisplay.orElse("5"));
     
     int count = bbsDao.selectBbsCount();
     
@@ -81,4 +82,51 @@ public class BbsServiceImpl implements IBbsService {
     return bbsDao.deleteBbs(bbsId) == 1 ? "게시글 삭제 성공" : "게시글 삭제 실패";
   }
 
+  @Override
+  public Map<String, Object> getSearchList(HttpServletRequest request) {
+    // 검색에 필요한 파라미터
+    String contents = request.getParameter("contents");
+    String userName = request.getParameter("userName");
+    String beginDt = request.getParameter("beginDt");
+    String endDt = request.getParameter("endDt");
+    
+    // 페이징 처리에 필요한 파라미터
+    Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(optPage.orElse("1"));
+
+    Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
+    int display = Integer.parseInt(optDisplay.orElse("5"));
+    
+    // 검색 키워드들을 Map으로 만듬
+    Map<String, Object> map = new HashMap<String, Object>();  // Map.of()는 나중에 값을 추가할 수 없으므로 new HashMap()을 활용합니다.
+    map.put("contents", contents);
+    map.put("userName", userName);
+    map.put("beginDt", beginDt);
+    map.put("endDt", endDt);
+    
+    // 검색 결과 개수
+    int searchCount = bbsDao.selectSearchCount(map);
+    
+    // 페이징 처리에 필요한 모든 변수 처리하기
+    pageUtil.setPaging(page, display, searchCount);
+    int offset = pageUtil.getOffset();
+    
+    // 검색키워드 Map에 페이징 처리에 필요한 변수를 추가
+    map.put("offset", offset);
+    map.put("display", display);
+    
+    // 검색 목록 가져오기
+    List<BbsDto> searchList = bbsDao.selectSearchList(map);
+    
+    // 페이지 이동 링크 가져오기
+    String paging = pageUtil.getSearchPaging(request.getContextPath() + "/bbs/search.do", "contents=" + contents + "&userName=" + userName + "&beginDt=" + beginDt + "&endDt=" + endDt);
+    
+    // 결과 반환
+    return Map.of("searchList", searchList
+                , "searchCount", searchCount
+                , "paging", paging
+                , "offset", offset);  // offset 으로 순번 생성;
+  }
+  
+  
 }

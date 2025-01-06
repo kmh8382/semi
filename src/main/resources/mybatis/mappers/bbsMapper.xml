@@ -7,13 +7,14 @@
     INSERT INTO tbl_bbs
     VALUES (null, #{userId}, #{contents}, 0, 0, LAST_INSERT_ID() + 1, 0, null, NOW())
   </insert>
-  
+ 
   <select id="selectBbsList" parameterType="Map" resultType="BbsDto">
-    SELECT *
-      FROM tbl_bbs
+    SELECT bbs_id, b.user_id, contents, state, depth, group_id, group_order, modify_dt, created_dt, u.user_name
+      FROM tbl_bbs b INNER JOIN tbl_user u
+        ON b.user_id = u.user_id
      ORDER BY group_id DESC, group_order ASC
      LIMIT #{offset}, #{display}
-  </select>
+  </select>  
   
   <select id="selectBbsCount" resultType="int">
     SELECT COUNT(*)
@@ -37,5 +38,32 @@
        SET state = 1
      WHERE bbs_id = #{bbsId}
   </update>
+  
+    <select id="selectSearchCount" parameterType="Map" resultType="int">
+    SELECT COUNT(*)
+      FROM tbl_bbs b INNER JOIN tbl_user u
+        ON b.user_id = u.user_id
+    <where>
+      <if test="contents != ''">contents LIKE CONCAT('%', #{contents}, '%')</if>
+      <if test="userName != ''">AND user_name LIKE CONCAT('%', #{userName}, '%')</if>
+      <if test="beginDt != ''">AND created_dt >= #{beginDt}</if>
+      <if test="endDt != ''">AND created_dt <![CDATA[<=]]> #{endDt}</if>
+    </where>  
+  </select>
+  
+  <select id="selectSearchList" parameterType="Map" resultType="BbsDto">
+    SELECT bbs_id, b.user_id, contents, state, depth, group_id, group_order, modify_dt, created_dt, u.user_name
+      FROM tbl_bbs b INNER JOIN tbl_user u
+        ON b.user_id = u.user_id
+    <where>
+      <if test="contents != ''">contents LIKE CONCAT('%', #{contents}, '%')</if>
+      <if test="userName != ''">AND user_name LIKE CONCAT('%', #{userName}, '%')</if>
+      <if test="beginDt != ''">AND created_dt >= #{beginDt}</if>
+      <if test="endDt != ''">AND created_dt <![CDATA[<=]]> #{endDt}</if>
+    </where>
+     ORDER BY group_id DESC, group_order ASC
+     LIMIT #{offset}, #{display}
+  </select>
+  
   
 </mapper>

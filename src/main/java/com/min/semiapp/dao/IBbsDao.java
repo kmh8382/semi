@@ -12,5 +12,6 @@ public interface IBbsDao {
   int updateGroupOrder(BbsDto bbsDto);
   int insertBbsReply(BbsDto bbsDto);
   int deleteBbs(int bbsId);
-
+  int selectSearchCount(Map<String, Object> map);
+  List<BbsDto> selectSearchList(Map<String, Object> map);
 }

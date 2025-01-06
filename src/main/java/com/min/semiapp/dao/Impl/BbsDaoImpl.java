@@ -47,4 +47,13 @@ public class BbsDaoImpl implements IBbsDao {
     return template.update("mybatis.mappers.bbsMapper.deleteBbs", bbsId);
   }
 
+  @Override
+  public int selectSearchCount(Map<String, Object> map) {
+    return template.selectOne("mybatis.mappers.bbsMapper.selectSearchCount", map);
+  }
+  
+  @Override
+  public List<BbsDto> selectSearchList(Map<String, Object> map) {
+    return template.selectList("mybatis.mappers.bbsMapper.selectSearchList", map);
+  }
 }

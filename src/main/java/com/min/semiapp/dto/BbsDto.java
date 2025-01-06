@@ -25,4 +25,5 @@ public class BbsDto {
   private int groupOrder;
   private Timestamp modifyDt;
   private Timestamp createdDt;
+  private String userName;
 }

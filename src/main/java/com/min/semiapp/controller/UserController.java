@@ -1,5 +1,6 @@
 package com.min.semiapp.controller;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -119,5 +120,25 @@ public class UserController {
     return "redirect:/";
   }  
   
+  @RequestMapping(value="/loginlog.do")
+  public String loginlog(HttpServletRequest request, Model model) {
+    Map<String, Object> map = userService.getLoginList(request);
+    model.addAttribute("offset", map.get("offset"));
+    model.addAttribute("count", map.get("count"));
+    model.addAttribute("loginList", map.get("loginList"));
+    model.addAttribute("paging", map.get("paging"));
+    return "user/loginlog";
+  }
+
+    @RequestMapping(value="/withdrawal.do")
+    public String withdrawal(HttpServletRequest request, Model model) {
+      Map<String, Object> map = userService.getWithdrawalList(request);
+      model.addAttribute("offset", map.get("offset"));
+      model.addAttribute("count", map.get("count"));
+      model.addAttribute("withdrawalList", map.get("withdrawalList"));
+      model.addAttribute("paging", map.get("paging"));
+      return "user/withdrawal";
+    }
+
   
 }

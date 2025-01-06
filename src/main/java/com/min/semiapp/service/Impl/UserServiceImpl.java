@@ -4,7 +4,9 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,9 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.min.semiapp.dao.IUserDao;
+import com.min.semiapp.dto.BbsDto;
+import com.min.semiapp.dto.LoginDto;
 import com.min.semiapp.dto.UserDto;
+import com.min.semiapp.dto.WithdrawalDto;
 import com.min.semiapp.service.IUserService;
 import com.min.semiapp.util.FileUtil;
+import com.min.semiapp.util.PageUtil;
 import com.min.semiapp.util.SecureUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +33,8 @@ public class UserServiceImpl implements IUserService {
   private final IUserDao userDao;
   private final SecureUtil secureUtil;
   private final FileUtil fileUtil;
+  private final PageUtil pageUtil;
+  
   
   @Override
   public String signup(UserDto userDto) {
@@ -160,7 +168,6 @@ public class UserServiceImpl implements IUserService {
     
     // 프로필 이미지가 존재하는 경우 HDD에서 프로필 이미지를 삭제합니다.
     UserDto userDto = userDao.selectUserByMap(Map.of("userId", userId));
-System.out.println("+++++++++++++++" + userDto.getProfileImg());
     if(userDto.getProfileImg() != null) {   
       File profile = new File(userDto.getProfileImg());
       if(profile.exists())
@@ -172,4 +179,51 @@ System.out.println("+++++++++++++++" + userDto.getProfileImg());
     
   }
   
+  @Override
+  public Map<String, Object> getWithdrawalList(HttpServletRequest request) {
+    Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(optPage.orElse("1"));
+
+    Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
+    int display = Integer.parseInt(optDisplay.orElse("5"));
+    
+    int count = userDao.selectWithdrawalCount();
+    
+    pageUtil.setPaging(page, display, count);
+    
+    int offset = pageUtil.getOffset();
+    
+    List<WithdrawalDto> withdrawalList = userDao.selectWithdrawalList(Map.of("offset", offset, "display", display));
+    
+    String paging = pageUtil.getPaging(request.getContextPath() + "/user/withdrawal.do", "");
+    
+    return Map.of("offset", offset
+                , "count", count
+                , "withdrawalList", withdrawalList
+                , "paging", paging);
+  }
+  
+  @Override
+  public Map<String, Object> getLoginList(HttpServletRequest request) {
+    Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
+    int page = Integer.parseInt(optPage.orElse("1"));
+
+    Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
+    int display = Integer.parseInt(optDisplay.orElse("5"));
+    
+    int count = userDao.selectLoginCount();
+    
+    pageUtil.setPaging(page, display, count);
+    
+    int offset = pageUtil.getOffset();
+    
+    List<LoginDto> loginList = userDao.selectLoginList(Map.of("offset", offset, "display", display));
+    
+    String paging = pageUtil.getPaging(request.getContextPath() + "/user/loginlog.do", "");
+    
+    return Map.of("offset", offset
+                , "count", count
+                , "loginList", loginList
+                , "paging", paging);
+  }
 }

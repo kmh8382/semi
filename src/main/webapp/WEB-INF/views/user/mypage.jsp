@@ -8,6 +8,12 @@
 </jsp:include>
 
 <style>
+  .hidden {
+    display: none;
+  }
+  .visible {
+    display: block;
+  }  
   .sub-title {
     margin-top: 50px;
   }
@@ -15,23 +21,13 @@
     content: '*';
   }
 </style>
-<script>
-  function toRepw() {
-    location.href = '${contextPath}/user/repw.form';
-  }
-  function deleteAccount() {
-    if(confirm('모든 회원 정보가 삭제됩니다. 탈퇴하시겠습니까?')) {
-      location.href = '${contextPath}/user/deleteAccount.do';
-    }
-  }
-</script>
-
 
   <h1>My Page</h1>
   
   <h3 class="sub-title">개인정보변경</h3>
-  <form action="${contextPath}/user/modifyInfo.do" method="post">
+  <form id="form-mydata" action="${contextPath}/user/modifyInfo.do" method="post">
     <input type="hidden" name="userId" value="${u.userId}">
+    <input type="hidden" name="isAdmin" id="isAdmin" value="${u.isAdmin}">
     <div>
       <label for="userEmail">이메일</label>
       <input type="text" name="userEmail" id="userEmail" value="${u.userEmail}">
@@ -47,7 +43,7 @@
   
   <h3 class="sub-title">프로필이미지변경</h3>
   <form action="${contextPath}/user/modifyProfile.do" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="userId" value="${u.userId}">
+    <input type="hidden" name="userId" value="${u.userId}">    
     <div>
       <c:if test="${empty u.profileImg}"><img src="${contextPath}/assets/images/avatar.png" width="80px"></c:if>
       <c:if test="${not empty u.profileImg}"><img src="${contextPath}${u.profileImg}" width="80px"></c:if>  <%-- 이 경로를 해석하려면 servlet-context.xml 파일에 정적 파일의 경로 인식을 추가해 줘야 합니다. --%>
@@ -66,6 +62,41 @@
 
   <h3 class="sub-title">회원탈퇴</h3>
   <div><button type="button" onclick="deleteAccount()">회원탈퇴하기</button></div>
+
+  <div id="isAdminDiv" class="hidden">
+    <h3 class="sub-title">관리자 기능</h3>
+    <button type="button" onclick="loginlogBtn()">로그인 기록보기</button>
+    <button type="button" onclick="withdrawalBtn()">탈퇴 회원보기</button>
+  </div>
+
+<script>
+  const formMydata = document.getElementById('form-mydata');
+  
+  function loginlogBtn() {      
+    formMydata.action = '${contextPath}/user/loginlog.do';
+    formMydata.submit();
+  }
+
+  function withdrawalBtn() {      
+    formMydata.action = '${contextPath}/user/withdrawal.do';
+    formMydata.submit();
+  }
+  
+  function toRepw() {
+    location.href = '${contextPath}/user/repw.form';
+  }
+  function deleteAccount() {
+    if(confirm('모든 회원 정보가 삭제됩니다. 탈퇴하시겠습니까?')) {
+      location.href = '${contextPath}/user/deleteAccount.do';
+    }
+  }
+  
+  const isAdminValue = document.getElementById('isAdmin').value;    
+  if(isAdminValue == 1) {
+    document.getElementById("isAdminDiv").classList.remove("hidden");
+  }
+
+</script>
 
 </div>
 

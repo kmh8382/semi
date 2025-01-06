@@ -51,5 +51,19 @@ public class BbsController {
     return "redirect:/bbs/list.do";  
   }
   
+  @RequestMapping(value="/search.form")
+  public void searchForm() {
+    
+  }
   
+  @RequestMapping(value="/search.do")
+  public String search(HttpServletRequest request, Model model) {
+    Map<String, Object> map = bbsService.getSearchList(request);
+    model.addAttribute("offset", map.get("offset"));
+    model.addAttribute("count", map.get("searchCount"));
+    model.addAttribute("bbsList", map.get("searchList"));
+    model.addAttribute("paging", map.get("paging"));
+    return "bbs/list";
+    
+  }
 }

@@ -1,5 +1,7 @@
 package com.min.semiapp.service;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +17,7 @@ public interface IUserService {
   String modifyInfo(UserDto userDto) throws Exception;
   String modifyProfile(MultipartFile profile, int userId) throws Exception;
   String modifyPw(UserDto userDto);
-  String deleteAccount(int userId);
-  
+  String deleteAccount(int userId);  
+  Map<String, Object> getWithdrawalList(HttpServletRequest request);
+  Map<String, Object> getLoginList(HttpServletRequest request);  
 }
