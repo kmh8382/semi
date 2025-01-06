@@ -15,9 +15,11 @@
   }
   
    h1 {
+    font-size: 28px;
+    color: #333333;
+    font-weight: 400;
     text-align: center;
-    font-size: 30px;
-    margin: 30px auto;
+    margin-bottom: 60px;
   }
   
   write_email, title {

@@ -31,10 +31,11 @@
   
   .wrap td {
     border: 1px solid black;
+    padding: 14px 0;
   }
-  
+
   .number {
-    text-aling: right;
+    text-align: right;
   }
   
   .wrap td: nth-of-type(1) {width: 60px; }
@@ -58,14 +59,32 @@
     text-align: center;
   }
   
-  .ch {
-  pointer-events: none;
-  }
-  
   .ch input {
-  pointer-events: auto;
+    pointer-events: auto;
+    display: flex;
+    text-align: center;
+    vertical-align: middle;
   }
   
+  .table-blog {
+    font-size: 13px;
+    width: 100%;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .blog {
+    color: #333;
+    display: inline-block;
+    line-height: 1.4;
+    word-break: break-all;
+    vertical-align: middle;
+  }
+  
+  .blog-ct {
+    text-align: center;
+  }
+
 </style>
 
 <h1>Blog List</h1>
@@ -75,17 +94,17 @@
 </div>
 
 
+<div>
+  <form id="form-list" action="${contextPath}/blog/removes.do" method="post">
+  <button type="submit">블로그 삭제</button>
+
 <div class="wrap">
   <div style="text-align: right; cursor: pointer;">
     <a href="${contextPath}/blog/list.do?page=1&sort=DESC">최신순</a> | 
     <a href="${contextPath}/blog/list.do?page=1&sort=ASC">과거순</a>
 </div>
 
-<div>
-  <form id="form-list" action="${contextPath}/blog/removes.do" method="post">
-  <button type="submit">블로그 삭제</button>
-
-<table>
+<table id="table-blog">
   <caption class="number" style="text-align: right;" >총 ${total}개 블로그</caption>
 
   <thead class="list">
@@ -112,13 +131,13 @@
       2.선택 삭제 버튼을 품고 있는 form 태그 안에 checkbox가 들어 있어야 함
       -->
         <td class="ch"><input type="checkbox" name="blogIds" value="${blog.blogId}"></td>
-        <td>${offset + vs.count}</td> <!-- count : index + 1 -->
-        <td>${blog.userDto.userEmail}</td>
-        <td>${blog.title}</td>
-        <td>${blog.contents}</td>
-        <td>${blog.hit}</td>
-        <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${blog.createDt}"/></td>
-        <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${blog.modifyDt}"/></td>
+        <td class="blog-ct">${offset + vs.count}</td> <!-- count : index + 1 -->
+        <td class="blog-ct">${blog.userDto.userEmail}</td>
+        <td class="blog-ct">${blog.title}</td>
+        <td class="blog-ct">${blog.contents}</td>
+        <td class="blog-ct">${blog.hit}</td>
+        <td class="blog-ct"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${blog.createDt}"/></td>
+        <td class="blog-ct"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${blog.modifyDt}"/></td>
       </tr>
       </c:forEach>
    </tbody>
