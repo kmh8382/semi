@@ -22,7 +22,7 @@ public class UserDto {
   private String userName;
   private String profileImg;
   private String sessionId;
-  private boolean isAdmin;
+  private boolean is_admin;
   private Timestamp changeDt;
   private Timestamp createdDt;
 }
