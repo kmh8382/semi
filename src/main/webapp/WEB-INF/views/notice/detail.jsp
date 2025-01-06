@@ -26,7 +26,7 @@
 	  <pre>내용 : ${n.contents}</pre>
   </div>
   
-  <div style="background-color: beige";>
+  <div style="background-color: beige">
     <h4>첨부 파일</h4>
     <c:forEach items="${attachList}" var="a">
       <div>

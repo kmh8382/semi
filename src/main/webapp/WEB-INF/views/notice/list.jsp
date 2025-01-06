@@ -11,42 +11,43 @@
 
   <div class="front-list">
     <h1>Notice List</h1>
-    
-    <div>
-      <button type="button" id="btn-notice"> 새 공지사항 작성하기</button>
+    <div class="btn-right">
+      <div class="btn-notice">
+        <button type="button" id="btn-notice"> 새 공지사항 작성하기</button>
+      </div>
+       |
+      <div class="btn-search">
+        <button type="button"  id="btn-search">검색</button>
+      </div>
+    </div>
+    <div class="sort-toCol">
+      <div class="title-list">
+        <select id="sort-column">
+          <option value="notice_id">작성일자</option>
+          <option value="title">제목</option>
+        </select>
+        <button type="button" class="btn-sort" data-sort="ASC">오름차순</button>
+        <button type="button" class="btn-sort" data-sort="DESC">내림차순</button>
+      </div>
+      <div class="title-count">전체 공지 ${total}개</div>
     </div>
     
-    <div>
-      <button type="button"  id="btn-search"><i class="ri-chat-search-fill"></i>검색</button>
-    </div>
-    
-    <div>
-      <select id="sort-column">
-        <option value="notice_id">작성일자</option>
-        <option value="title">제목</option>
-      </select>
-      <button type="button" class="btn-sort" data-sort="ASC">오름차순</button>
-      <button type="button" class="btn-sort" data-sort="DESC">내림차순</button>
-    </div>
-  
-     <div>전체 공지 ${total}개</div>
-    
-    <table border="1">
+    <table  class="total-list">
       <thead>
         <tr>
-          <td>공지번호</td>
-          <td>제목</td>
-          <td>파일수</td>
-          <td>작성일시</td>
-          <td>수정일시</td>
+          <th class="th-num">공지번호</th>
+          <th class="th-title">제목</th>
+          <th class="th-file">파일수</th>
+          <th class="th-date">작성일시</th>
+          <th class="th-mod">수정일시</th>
         </tr>
       </thead>
       <tbody>
         <c:forEach var="n" items="${noticeList}" >
           <tr class="notices" data-notice-id="${n.noticeId}" >
-            <td>${n.noticeId}</td>
-            <td>${n.title}</td>
-            <td>(${n.attachCount})...</td>
+            <th>${n.noticeId}</th>
+            <th class="not-title">${n.title}</th>
+            <th>(${n.attachCount})...</th>
             <td><fmt:formatDate pattern="yyyy.MM.dd HH:mm:ss" value="${n.createDt}"/></td>
             <td><fmt:formatDate pattern="yyyy.MM.dd HH:mm:ss" value="${n.modifyDt}"/></td>
           </tr>

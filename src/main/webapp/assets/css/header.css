@@ -3,6 +3,9 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
 @import url(https://fonts.googleapis.com/css?family=Pacifico);
 
+body {
+  width: 1920px;
+}
 
 .logo {
   font-size: 0px;
