@@ -71,10 +71,13 @@ public class BlogController {
   
   // 블로그 댓글 삭제
   @RequestMapping(value="blog/deleteCommentReply.do")
-  public String delete(@RequestParam(value = "commentId",required = false, defaultValue = "0") int commentId, RedirectAttributes redirectAttributes) {
+  public String delete(@RequestParam(name = "blogId",required = false, defaultValue = "0") int blogId,
+                       @RequestParam(name = "commentId",required = false, defaultValue = "0") int commentId,
+                       RedirectAttributes redirectAttributes) {
     redirectAttributes.addFlashAttribute("msg", commentService.deleteCommentReply(commentId));
-    return "redirect:/blog/detail.do?commentId=" + commentId;
+    return "redirect:/blog/detail.do?blogId=" + blogId;
   }
+  
   
   // 블로그 수정 성공 여부 메시지 반환
   @RequestMapping(value="/blog/modify.do", method=RequestMethod.POST)

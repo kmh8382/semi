@@ -79,10 +79,9 @@
   
     <!-- 블로그 대댓글 달기 -->
     <c:forEach items="${commentList}" var="c" varStatus="k">
-      <div>
-         
-         <span style="display: inline-block; width: 100px;">${offset + k.count}</span>
-        <c:if test="${b.state == 1}">
+      <div>        
+        <span style="display: inline-block; width: 100px;">${offset + k.count}</span>
+        <c:if test="${c.state == 1}">
           <span>삭제된 댓글입니다.</span>
         </c:if>
         <c:if test="${c.state == 0}">
