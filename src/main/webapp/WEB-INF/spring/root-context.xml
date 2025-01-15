@@ -20,14 +20,21 @@
     <property name="username" value="greenit"/>
     <property name="password" value="greenit"/>
 -->  
-<!--
+<!-- 가상머신 
     <property name="jdbcUrl"  value="jdbc:mysql://192.168.56.1:3306/db_semi?serverTimezone=Asia/Seoul"/>
     <property name="username" value="greenit"/>
     <property name="password" value="greenit"/>
 -->
+<!-- AWS 20240114  
     <property name="jdbcUrl"  value="jdbc:mysql://43.201.169.18:3306/db_semi?serverTimezone=Asia/Seoul"/>
     <property name="username" value="greenit"/>
-    <property name="password" value="greenit"/>        
+    <property name="password" value="greenit"/>
+-->
+<!-- AWS 20240115 -->  
+    <property name="jdbcUrl"  value="jdbc:mysql://15.164.227.132:3306/db_semi?serverTimezone=Asia/Seoul"/>
+    <property name="username" value="greenit"/>
+    <property name="password" value="greenit"/>
+
   </bean>   
   
   <bean id="hikariDataSource" class="com.zaxxer.hikari.HikariDataSource">
